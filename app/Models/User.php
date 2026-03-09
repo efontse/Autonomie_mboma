@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\InscriptionFormation;
 
 
 class User extends Authenticatable
@@ -73,7 +74,15 @@ class User extends Authenticatable
 
     public function formations(): HasMany
     {
-    return $this->hasMany(\App\Models\InscriptionFormation::class, 'user_id');
+        return $this->hasMany(\App\Models\InscriptionFormation::class, 'user_id');
+    }
+
+    /**
+     * Alias pour inscriptions aux formations
+     */
+    public function inscriptionsFormations(): HasMany
+    {
+        return $this->hasMany(InscriptionFormation::class, 'user_id');
     }
 
     public function notificationsNonLues(): int
