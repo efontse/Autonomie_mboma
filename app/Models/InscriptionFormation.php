@@ -9,6 +9,8 @@ class InscriptionFormation extends Model
 {
     protected $table = 'inscriptions_formations';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'user_id',
         'formation_id',

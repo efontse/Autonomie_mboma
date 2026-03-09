@@ -337,10 +337,12 @@
             <div class="card-actions">
               <a href="{{ route('formation.show', $formation) }}" class="btn btn-primary">Voir</a>
               @auth
-                <form action="{{ route('formation.inscrire', $formation) }}" method="POST">
+                <form action="{{ route('formation.inscrire', $formation) }}" method="POST" class="form-inscription">
                   @csrf
-                  <button type="submit" class="btn btn-secondary">S'inscrire</button>
+                  <button type="submit" class="btn btn-secondary btn-inscription">S'inscrire</button>
                 </form>
+              @else
+                <a href="{{ route('auth.connexion') }}" class="btn btn-secondary">Se connecter pour s'inscrire</a>
               @endauth
             </div>
           </article>
@@ -363,6 +365,41 @@
       document.getElementById('sidebar').classList.remove('open');
       document.getElementById('overlay').classList.remove('visible');
     }
+
+    // Gestion de la soumission du formulaire d'inscription
+    document.querySelectorAll('.form-inscription').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = this.querySelector('.btn-inscription');
+        btn.textContent = 'Inscription...';
+        btn.disabled = true;
+
+        fetch(this.action, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Accept': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert(data.message || 'Inscription réussie !');
+            btn.textContent = 'Inscrit';
+            btn.classList.add('btn-success');
+          } else {
+            alert(data.message || 'Une erreur est survenue');
+            btn.textContent = 'S\'inscrire';
+            btn.disabled = false;
+          }
+        })
+        .catch(error => {
+          console.error('Erreur:', error);
+          // Recharger la page pour voir le résultat
+          window.location.reload();
+        });
+      });
+    });
   </script>
 </body>
 </html>

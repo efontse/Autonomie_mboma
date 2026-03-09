@@ -13,7 +13,7 @@ class CategorieFormation extends Model
 
     public function formations(): HasMany
     {
-        return $this->hasMany(Formation::class);
+        return $this->hasMany(Formation::class, 'categorie_id');
     }
 }
 

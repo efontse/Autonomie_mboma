@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InformationController;
+use App\Http\Controllers\FormationController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -53,32 +55,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 });
 
-// ── Routes admin / modération ─────────────────────────────
-Route::middleware(['auth', 'role:admin,moderateur'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/tableau-de-bord', fn() => view('admin.dashboard'))->name('dashboard');
-    // TODO: modération des publications
-});
-
-use App\Http\Controllers\FormationController;
-
-// ── Routes utilisatrices ──────────────────────────────────
+// ── Routes utilisatrices (formations) ─────────────────────
 Route::middleware('auth')->prefix('formations')->name('formation.')->group(function () {
-
     // Liste des formations
-    Route::get('/',                          [FormationController::class, 'index'])->name('index');
-
+    Route::get('/', [FormationController::class, 'index'])->name('index');
     // Mes formations inscrites
-    Route::get('/mes-formations',            [FormationController::class, 'mesFormations'])->name('mes-formations');
-
+    Route::get('/mes-formations', [FormationController::class, 'mesFormations'])->name('mes-formations');
     // Détail d'une formation
-    Route::get('/{formation}',               [FormationController::class, 'show'])->name('show');
-
+    Route::get('/{formation}', [FormationController::class, 'show'])->name('show');
     // S'inscrire à une formation
-    Route::post('/{formation}/inscrire',     [FormationController::class, 'inscrire'])->name('inscrire');
-
+    Route::post('/{formation}/inscrire', [FormationController::class, 'inscrire'])->name('inscrire');
     // Mettre à jour la progression (AJAX)
-    Route::post('/{formation}/progression',  [FormationController::class, 'progression'])->name('progression');
+    Route::post('/{formation}/progression', [FormationController::class, 'progression'])->name('progression');
 });
 
-// Inclusion des routes admin
+// ── Routes admin / modération ─────────────────────────────
 require __DIR__ . '/admin.php';
+

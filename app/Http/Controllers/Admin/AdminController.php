@@ -8,6 +8,8 @@ use App\Models\Formation;
 use App\Models\Information;
 use App\Models\Publication;
 use App\Models\ProjetEntrepreneurial;
+use App\Models\InscriptionFormation;
+use App\Models\CategorieFormation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -21,9 +23,10 @@ class AdminController extends Controller
         $stats = [
             'utilisateurs' => User::count(),
             'formations' => Formation::count(),
-            'informations' => Information::count(),
-            'publications' => Publication::count(),
-            'projets' => ProjetEntrepreneurial::count(),
+            'informations' => \App\Models\Information::count(),
+            'publications' => \App\Models\Publication::count(),
+            'projets' => \App\Models\ProjetEntrepreneurial::count(),
+            'inscriptions' => InscriptionFormation::count(),
         ];
 
         // Derniers utilisateurs inscrits
@@ -35,7 +38,52 @@ class AdminController extends Controller
             ->groupBy('role')
             ->get();
 
-        return view('admin.dashboard', compact('stats', 'derniersUtilisateurs', 'utilisateursParRole'));
+        // Formations avec nombre d'inscriptions
+        $formationsPopulaires = Formation::withCount('inscriptions')
+            ->orderBy('inscriptions_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Inscriptions par catégorie
+        $categories = \App\Models\CategorieFormation::with('formations')->get();
+        $inscriptionsParCategorie = $categories->map(function($categorie) {
+            $inscriptions = 0;
+            foreach ($categorie->formations as $formation) {
+                $inscriptions += $formation->inscriptions()->count();
+            }
+            return [
+                'nom' => $categorie->nom,
+                'inscriptions' => $inscriptions
+            ];
+        });
+
+        // Inscriptions par mois (derniers 6 mois)
+        $inscriptionsParMois = InscriptionFormation::selectRaw(
+            "DATE_FORMAT(inscrit_le, '%Y-%m') as mois, COUNT(*) as total"
+        )
+            ->where('inscrit_le', '>=', now()->subMonths(6))
+            ->groupBy('mois')
+            ->orderBy('mois')
+            ->get();
+
+        // Total des inscriptions
+        $totalInscriptions = InscriptionFormation::count();
+
+        // Formations terminées
+        $formationsTerminees = InscriptionFormation::where('termine', true)->count();
+
+        return view('admin.dashboard',
+            compact(
+                'stats',
+                'derniersUtilisateurs',
+                'utilisateursParRole',
+                'formationsPopulaires',
+                'inscriptionsParCategorie',
+                'inscriptionsParMois',
+                'totalInscriptions',
+                'formationsTerminees'
+            )
+        );
     }
 
     /**
@@ -102,7 +150,8 @@ class AdminController extends Controller
      */
     public function formations()
     {
-        $formations = Formation::with(['categorie', 'auteur'])
+        $formations = Formation::with(['categorie', 'auteur', 'inscriptions'])
+            ->withCount('inscriptions')
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         return view('admin.formations.index', compact('formations'));

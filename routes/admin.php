@@ -9,17 +9,20 @@ use App\Http\Controllers\Admin\AdminController;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth', 'role:admin,moderateur'])->prefix('admin')->name('admin.')->group(function () {
-
-    // Dashboard
-    Route::get('/tableau-de-bord', [AdminController::class, 'dashboard'])->name('dashboard');
-
-    // Gestion des utilisateurs
+// Routes accessibles aux administrateurs uniquement
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Gestion des utilisateurs (ADMIN SEULEMENT)
     Route::get('/utilisateurs', [AdminController::class, 'utilisateurs'])->name('utilisateurs.index');
     Route::get('/utilisateurs/{user}', [AdminController::class, 'voirUtilisateur'])->name('utilisateurs.show');
     Route::get('/utilisateurs/{user}/editer', [AdminController::class, 'editerUtilisateur'])->name('utilisateurs.edit');
     Route::put('/utilisateurs/{user}', [AdminController::class, 'mettreAJourUtilisateur'])->name('utilisateurs.update');
     Route::delete('/utilisateurs/{user}', [AdminController::class, 'supprimerUtilisateur'])->name('utilisateurs.destroy');
+});
+
+// Routes accessibles aux administrateurs et modérateurs
+Route::middleware(['auth', 'role:admin,moderateur'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/tableau-de-bord', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Gestion des formations
     Route::get('/formations', [AdminController::class, 'formations'])->name('formations.index');

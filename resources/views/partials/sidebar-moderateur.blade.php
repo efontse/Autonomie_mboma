@@ -1,8 +1,3 @@
-@if(Auth::user()->estAdmin())
-    @include('partials.sidebar-admin')
-@elseif(Auth::user()->role === 'moderateur')
-    @include('partials.sidebar-moderateur')
-@else
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-mark">
@@ -13,7 +8,7 @@
     </div>
     <div class="logo-text">
       <div class="logo-name">Plateforme Mboma</div>
-      <div class="logo-sub">Autonomisation</div>
+      <div class="logo-sub">Modération</div>
     </div>
   </div>
 
@@ -29,9 +24,9 @@
   </div>
 
   <nav class="sidebar-nav">
-    <div class="nav-section-label">Principal</div>
+    <div class="nav-section-label">Modération</div>
 
-    <a class="nav-item actif" href="{{ route('dashboard') }}">
+    <a class="nav-item" href="{{ route('dashboard') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
         <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
@@ -39,20 +34,30 @@
       Tableau de bord
     </a>
 
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="{{ route('admin.dashboard') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-        <circle cx="12" cy="7" r="4"/>
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
-      Mon profil
+      Dashboard Modération
     </a>
 
-    <a class="nav-item" href="#">
+    <div class="nav-section-label" style="margin-top:0.5rem">Gestion du contenu</div>
+
+    <a class="nav-item" href="{{ route('admin.formations.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
       </svg>
-      Notifications
+      Formations
+    </a>
+
+    <a class="nav-item" href="{{ route('admin.informations.index') }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      Informations
     </a>
 
     <div class="nav-section-label" style="margin-top:0.5rem">Modules</div>
@@ -63,7 +68,7 @@
         <line x1="12" y1="8" x2="12" y2="12"/>
         <line x1="12" y1="16" x2="12.01" y2="16"/>
       </svg>
-      Information
+      Information (Voir)
     </a>
 
     <div class="nav-item has-submenu" onclick="toggleSubmenu(this)">
@@ -103,37 +108,23 @@
       Communauté
     </a>
 
-    @if(Auth::user()->estModerateur())
-    <div class="nav-section-label" style="margin-top:0.5rem">Administration</div>
-    <a class="nav-item" href="{{ route('admin.dashboard') }}">
+    <div class="nav-section-label" style="margin-top:0.5rem">Mon compte</div>
+
+    <a class="nav-item" href="#">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
       </svg>
-      Tableau de bord Admin
+      Mon profil
     </a>
-    <a class="nav-item" href="{{ route('admin.utilisateurs.index') }}">
+
+    <a class="nav-item" href="#">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
       </svg>
-      Utilisateurs
+      Notifications
     </a>
-    <a class="nav-item" href="{{ route('admin.formations.index') }}">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-      </svg>
-      Formations
-    </a>
-    <a class="nav-item" href="{{ route('admin.informations.index') }}">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="10"/>
-        <line x1="12" y1="8" x2="12" y2="12"/>
-        <line x1="12" y1="16" x2="12.01" y2="16"/>
-      </svg>
-      Informations
-    </a>
-    @endif
   </nav>
 
   <div class="sidebar-footer">
@@ -152,5 +143,3 @@
 </aside>
 
 <div class="sidebar-overlay" id="overlay" onclick="fermerSidebar()"></div>
-@endif
-

@@ -62,6 +62,9 @@ class FormationController extends Controller
             ->first();
 
         if ($inscriptionExistante) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Vous êtes déjà inscrit à cette formation.']);
+            }
             return redirect()->back()->with('info', 'Vous êtes déjà inscrit à cette formation.');
         }
 
@@ -74,6 +77,9 @@ class FormationController extends Controller
             'inscrit_le' => now(),
         ]);
 
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'message' => 'Inscription réussie ! Vous pouvez maintenant suivre cette formation.']);
+        }
         return redirect()->back()->with('success', 'Inscription réussie ! Vous pouvez maintenant suivre cette formation.');
     }
 

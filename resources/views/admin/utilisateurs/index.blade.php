@@ -60,6 +60,29 @@
     .btn-danger { color:var(--rouge); }
     .btn-danger:hover { border-color:var(--rouge); background:#FEE2E2; }
 
+    /* Modal de confirmation */
+    .modal-overlay {
+      display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center;
+    }
+    .modal-overlay.active { display:flex; }
+    .modal-card {
+      background:var(--blanc); border-radius:12px; padding:2rem; max-width:400px; width:90%;
+      box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);
+    }
+    .modal-icon {
+      width:60px; height:60px; background:#FEE2E2; border-radius:50%; display:flex;
+      align-items:center; justify-content:center; margin:0 auto 1.5rem;
+    }
+    .modal-icon svg { width:30px; height:30px; color:var(--rouge); }
+    .modal-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:700; text-align:center; margin-bottom:0.5rem; }
+    .modal-text { text-align:center; color:var(--texte-doux); font-size:0.95rem; margin-bottom:1.5rem; }
+    .modal-actions { display:flex; gap:1rem; justify-content:center; }
+    .btn-cancel { background:var(--blanc); color:var(--texte); border:1px solid var(--gris-clair); }
+    .btn-cancel:hover { border-color:var(--or); color:var(--or); }
+    .btn-delete { background:var(--rouge); color:var(--blanc); border:none; }
+    .btn-delete:hover { background:#B91C1C; }
+
     /* Sidebar */
     .sidebar { width:280px; background:var(--blanc); border-right:1px solid var(--gris-clair); display:flex; flex-direction:column; position:fixed; top:0; left:0; bottom:0; z-index:100; }
     .sidebar-logo { padding:1.5rem; display:flex; align-items:center; gap:0.75rem; border-bottom:1px solid var(--gris-clair); }
@@ -121,10 +144,7 @@
             <td class="actions">
               <a href="{{ route('admin.utilisateurs.show', $user) }}" class="btn-action">Voir</a>
               <a href="{{ route('admin.utilisateurs.edit', $user) }}" class="btn-action">Éditer</a>
-              <form action="{{ route('admin.utilisateurs.destroy', $user) }}" method="POST" style="display:inline">
-                @csrf @method('DELETE')
-                <button type="submit" class="btn-action btn-danger" onclick="return confirm('Êtes-vous sûr?')">Supprimer</button>
-              </form>
+              <button type="button" class="btn-action btn-danger" onclick="confirmDelete({{ $user->id }}, '{{ addslashes($user->prenom) }} {{ addslashes($user->nom) }}')">Supprimer</button>
             </td>
           </tr>
           @empty
@@ -138,5 +158,42 @@
 
     {{ $users->links() }}
   </div>
+
+  <!-- Modal de confirmation de suppression -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal-card">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+        </svg>
+      </div>
+      <h3 class="modal-title">Confirmer la suppression</h3>
+      <p class="modal-text">Êtes-vous sûr de vouloir supprimer l'utilisateur <strong id="deleteUserName"></strong> ? Cette action est irréversible.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-cancel" onclick="closeDeleteModal()">Annuler</button>
+        <form id="deleteForm" method="POST" style="display:inline">
+          @csrf
+          @method('DELETE')
+          <button type="submit" class="btn btn-delete">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function confirmDelete(userId, userName) {
+      document.getElementById('deleteUserName').textContent = userName;
+      document.getElementById('deleteForm').action = '/admin/utilisateurs/' + userId;
+      document.getElementById('deleteModal').classList.add('active');
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').classList.remove('active');
+    }
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+      if (e.target === this) closeDeleteModal();
+    });
+  </script>
 </body>
 </html>

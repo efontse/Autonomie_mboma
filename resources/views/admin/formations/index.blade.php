@@ -71,6 +71,7 @@
             <th>Catégorie</th>
             <th>Type</th>
             <th>Niveau</th>
+            <th>Inscrits</th>
             <th>Statut</th>
             <th>Actions</th>
           </tr>
@@ -82,6 +83,11 @@
             <td>{{ $formation->categorie->nom ?? '-' }}</td>
             <td>{{ ucfirst($formation->type) }}</td>
             <td>{{ ucfirst($formation->niveau) }}</td>
+            <td>
+              <span style="display:inline-flex;align-items:center;gap:0.3rem;background:var(--or);color:var(--blanc);padding:0.2rem 0.5rem;border-radius:12px;font-size:0.75rem;font-weight:600;">
+                {{ $formation->inscriptions_count }}
+              </span>
+            </td>
             <td><span class="badge badge-{{ $formation->statut }}">{{ ucfirst($formation->statut) }}</span></td>
             <td class="actions">
               <a href="{{ route('admin.formations.edit', $formation) }}" class="btn-action">Éditer</a>
@@ -93,7 +99,7 @@
           </tr>
           @empty
           <tr>
-            <td colspan="6" style="text-align:center; padding:2rem;">Aucune formation trouvée</td>
+            <td colspan="7" style="text-align:center; padding:2rem;">Aucune formation trouvée</td>
           </tr>
           @endforelse
         </tbody>
