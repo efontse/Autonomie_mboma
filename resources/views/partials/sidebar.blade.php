@@ -61,13 +61,24 @@
       Information
     </a>
 
-    <a class="nav-item" href="#">
+    <div class="nav-item has-submenu" onclick="toggleSubmenu(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
         <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
       </svg>
       Formation
-    </a>
+      <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <div class="submenu">
+      <a class="nav-item submenu-item" href="{{ route('formation.index') }}">
+        Toutes les formations
+      </a>
+      <a class="nav-item submenu-item" href="{{ route('formation.mes-formations') }}">
+        Mes formations
+      </a>
+    </div>
 
     <a class="nav-item" href="#">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

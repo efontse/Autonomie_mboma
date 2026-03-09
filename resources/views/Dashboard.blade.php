@@ -104,6 +104,12 @@
     .nav-item:hover { background: var(--ivoire); color: var(--texte); }
     .nav-item.actif { background: var(--ivoire); color: var(--brun); border-left-color: var(--or); }
     .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .nav-item.has-submenu { cursor: pointer; justify-content: flex-start; }
+    .nav-item.has-submenu .submenu-arrow { width: 14px; height: 14px; margin-left: auto; transition: transform 0.2s; }
+    .nav-item.has-submenu.open .submenu-arrow { transform: rotate(180deg); }
+    .submenu { display: none; padding-left: 1rem; background: rgba(0,0,0,0.02); }
+    .submenu.open { display: block; }
+    .submenu-item { padding-left: 2.5rem; font-size: 0.8rem; }
     .nav-badge {
       margin-left: auto;
       background: var(--or);
@@ -721,5 +727,12 @@
 </script>
 
 </body>
+<script>
+  function toggleSubmenu(element) {
+    element.classList.toggle('open');
+    const submenu = element.nextElementSibling;
+    submenu.classList.toggle('open');
+  }
+</script>
 </html>
 

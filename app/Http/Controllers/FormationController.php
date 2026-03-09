@@ -30,7 +30,7 @@ class FormationController extends Controller
     {
         $inscriptions = Auth::user()->inscriptionsFormations()
             ->with(['formation.categorie', 'formation.auteur'])
-            ->orderBy('created_at', 'desc')
+            ->orderBy('inscrit_le', 'desc')
             ->get();
 
         return view('formation.formation_mes-formations', compact('inscriptions'));
