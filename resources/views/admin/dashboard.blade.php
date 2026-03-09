@@ -24,6 +24,15 @@
       border-bottom:1px solid var(--gris-clair);
     }
     .page-header h1 { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700; }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      margin-right: 1rem;
+    }
+    .menu-toggle svg { width: 24px; height: 24px; stroke: var(--texte); }
 
     /* Stats */
     .stats-grid {
@@ -224,18 +233,44 @@
     .btn-deconnexion svg { width: 16px; height: 16px; }
 
     @media (max-width:900px) {
-      .page-wrap { margin-left:0; padding:1.5rem; }
+      .page-wrap { margin-left:0; padding:1rem; }
       .sidebar { transform: translateX(-100%); }
       .sidebar.ouvert { transform: translateX(0); }
       .charts-grid { grid-template-columns:1fr; }
+      .menu-toggle { display: block; }
     }
   </style>
+  <script>
+    function toggleSidebar() {
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('overlay');
+      if (sidebar) {
+        sidebar.classList.toggle('ouvert');
+        if (overlay) {
+          overlay.style.display = sidebar.classList.contains('ouvert') ? 'block' : 'none';
+        }
+      }
+    }
+    function fermerSidebar() {
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('overlay');
+      if (sidebar) sidebar.classList.remove('ouvert');
+      if (overlay) overlay.style.display = 'none';
+    }
+  </script>
 </head>
 <body>
   @include('partials.sidebar')
 
   <div class="page-wrap">
     <div class="page-header">
+      <button class="menu-toggle" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
       <div>
         <h1>Administration</h1>
         <p>Gérez la plateforme Mboma</p>
@@ -423,21 +458,35 @@
       return \Carbon\Carbon::parse($m . '-01')->format('M Y');
   })->toArray();
   $moisData = $inscriptionsParMois->pluck('total')->toArray();
+
+  // Encodage JSON pour JavaScript
+  $formationsLabelsJson = json_encode($formationsLabels);
+  $formationsDataJson = json_encode($formationsData);
+  $categoriesLabelsJson = json_encode($categoriesLabels);
+  $categoriesDataJson = json_encode($categoriesData);
+  $moisLabelsJson = json_encode($moisLabels);
+  $moisDataJson = json_encode($moisData);
   @endphp
 
   <script>
     // @ts-nocheck
-    // eslint-disable
+    // Préparation des données pour les graphiques (encodage côté serveur)
+    const formationsLabels = {!! $formationsLabelsJson !!};
+    const formationsData = {!! $formationsDataJson !!};
+    const categoriesLabels = {!! $categoriesLabelsJson !!};
+    const categoriesData = {!! $categoriesDataJson !!};
+    const moisLabels = {!! $moisLabelsJson !!};
+    const moisData = {!! $moisDataJson !!};
+
     // Graphique des formations populaires
     const formationsCtx = document.getElementById('formationsChart').getContext('2d');
-    /* eslint-disable no-undef */
     new Chart(formationsCtx, {
       type: 'bar',
       data: {
-        labels: {!! json_encode($formationsLabels) !!},
+        labels: formationsLabels,
         datasets: [{
           label: 'Nombre d\'inscriptions',
-          data: {!! json_encode($formationsData) !!},
+          data: formationsData,
           backgroundColor: '#C9923A',
           borderColor: '#1C1008',
           borderWidth: 1,
@@ -464,9 +513,9 @@
     new Chart(categoriesCtx, {
       type: 'doughnut',
       data: {
-        labels: {!! json_encode($categoriesLabels) !!},
+        labels: categoriesLabels,
         datasets: [{
-          data: {!! json_encode($categoriesData) !!},
+          data: categoriesData,
           backgroundColor: [
             '#C9923A', '#2A6049', '#2563EB', '#7C3AED', '#DC2626', '#059669'
           ],
@@ -494,10 +543,10 @@
     new Chart(moisCtx, {
       type: 'line',
       data: {
-        labels: {!! json_encode($moisLabels) !!},
+        labels: moisLabels,
         datasets: [{
           label: 'Inscriptions',
-          data: {!! json_encode($moisData) !!},
+          data: moisData,
           borderColor: '#2A6049',
           backgroundColor: 'rgba(42, 96, 73, 0.1)',
           fill: true,
