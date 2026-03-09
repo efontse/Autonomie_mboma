@@ -1,0 +1,44 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AdminController;
+
+/*
+|--------------------------------------------------------------------------
+| Routes Admin
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth', 'role:admin,moderateur'])->prefix('admin')->name('admin.')->group(function () {
+
+    // Dashboard
+    Route::get('/tableau-de-bord', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Gestion des utilisateurs
+    Route::get('/utilisateurs', [AdminController::class, 'utilisateurs'])->name('utilisateurs.index');
+    Route::get('/utilisateurs/{user}', [AdminController::class, 'voirUtilisateur'])->name('utilisateurs.show');
+    Route::get('/utilisateurs/{user}/editer', [AdminController::class, 'editerUtilisateur'])->name('utilisateurs.edit');
+    Route::put('/utilisateurs/{user}', [AdminController::class, 'mettreAJourUtilisateur'])->name('utilisateurs.update');
+    Route::delete('/utilisateurs/{user}', [AdminController::class, 'supprimerUtilisateur'])->name('utilisateurs.destroy');
+
+    // Gestion des formations
+    Route::get('/formations', [AdminController::class, 'formations'])->name('formations.index');
+    Route::get('/formations/creer', [AdminController::class, 'creerFormation'])->name('formations.create');
+    Route::post('/formations', [AdminController::class, 'enregistrerFormation'])->name('formations.store');
+    Route::get('/formations/{formation}/editer', [AdminController::class, 'editerFormation'])->name('formations.edit');
+    Route::put('/formations/{formation}', [AdminController::class, 'mettreAJourFormation'])->name('formations.update');
+    Route::delete('/formations/{formation}', [AdminController::class, 'supprimerFormation'])->name('formations.destroy');
+
+    // Gestion des informations
+    Route::get('/informations', [AdminController::class, 'informations'])->name('informations.index');
+    Route::get('/informations/creer', [AdminController::class, 'creerInformation'])->name('informations.create');
+    Route::post('/informations', [AdminController::class, 'enregistrerInformation'])->name('informations.store');
+    Route::get('/informations/{information}/editer', [AdminController::class, 'editerInformation'])->name('informations.edit');
+    Route::put('/informations/{information}', [AdminController::class, 'mettreAJourInformation'])->name('informations.update');
+    Route::delete('/informations/{information}', [AdminController::class, 'supprimerInformation'])->name('informations.destroy');
+
+    // Gestion des catégories de formations
+    Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
+    Route::post('/categories', [AdminController::class, 'creerCategorie'])->name('categories.store');
+    Route::delete('/categories/{categorie}', [AdminController::class, 'supprimerCategorie'])->name('categories.destroy');
+});

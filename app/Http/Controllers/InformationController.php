@@ -82,7 +82,7 @@ class InformationController extends Controller
         $information = Information::findOrFail($id);
 
         // Vérifier que l'utilisateur est l'auteur ou admin
-        if ($information->auteur_id !== Auth::id() && !Auth::user()->estAdmin()) {
+        if (!Auth::check() || ($information->auteur_id !== Auth::id() && !Auth::user()->estAdmin())) {
             abort(403, 'Vous n\'êtes pas autorisé à modifier cette information.');
         }
 
@@ -98,7 +98,7 @@ class InformationController extends Controller
         $information = Information::findOrFail($id);
 
         // Vérifier que l'utilisateur est l'auteur ou admin
-        if ($information->auteur_id !== Auth::id() && !Auth::user()->estAdmin()) {
+        if (!Auth::check() || ($information->auteur_id !== Auth::id() && !Auth::user()->estAdmin())) {
             abort(403, 'Vous n\'êtes pas autorisé à modifier cette information.');
         }
 
@@ -123,7 +123,7 @@ class InformationController extends Controller
         $information = Information::findOrFail($id);
 
         // Vérifier que l'utilisateur est l'auteur ou admin
-        if ($information->auteur_id !== Auth::id() && !Auth::user()->estAdmin()) {
+        if (!Auth::check() || ($information->auteur_id !== Auth::id() && !Auth::user()->estAdmin())) {
             abort(403, 'Vous n\'êtes pas autorisé à supprimer cette information.');
         }
 

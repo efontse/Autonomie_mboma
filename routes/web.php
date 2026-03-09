@@ -80,13 +80,5 @@ Route::middleware('auth')->prefix('formations')->name('formation.')->group(funct
     Route::post('/{formation}/progression',  [FormationController::class, 'progression'])->name('progression');
 });
 
-// ── Routes admin ──────────────────────────────────────────
-Route::middleware('auth')->prefix('admin/formations')->name('formation.admin.')->group(function () {
-
-    Route::get('/',                          [FormationController::class, 'adminIndex'])->name('index');
-    Route::get('/creer',                     [FormationController::class, 'create'])->name('create');
-    Route::post('/',                         [FormationController::class, 'store'])->name('store');
-    Route::get('/{formation}/editer',        [FormationController::class, 'edit'])->name('edit');
-    Route::put('/{formation}',               [FormationController::class, 'update'])->name('update');
-    Route::delete('/{formation}',            [FormationController::class, 'destroy'])->name('destroy');
-});
+// Inclusion des routes admin
+require __DIR__ . '/admin.php';
