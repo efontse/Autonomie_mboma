@@ -86,7 +86,7 @@
 
     <div class="nav-section-label" style="margin-top:0.5rem">Mon compte</div>
 
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="{{ route('admin.profil') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
         <circle cx="12" cy="7" r="4"/>
@@ -117,5 +117,31 @@
     </form>
   </div>
 </aside>
+
+<style>
+.btn-deconnexion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--gris-clair);
+  border-radius: 6px;
+  color: var(--texte-doux);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-deconnexion:hover {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #DC2626;
+}
+.btn-deconnexion svg { width: 14px; height: 14px; }
+</style>
 
 <div class="sidebar-overlay" id="overlay" onclick="fermerSidebar()"></div>

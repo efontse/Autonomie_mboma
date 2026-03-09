@@ -96,7 +96,7 @@
         <tbody>
           @forelse($categories as $categorie)
           <tr>
-            <td><span class="categorie-couleur" style="background:{{ $categorie->couleur }}"></span></td>
+            <td><span class="categorie-couleur" style="background: {{ $categorie->couleur }}"></span></td>
             <td><strong>{{ $categorie->nom }}</strong></td>
             <td>{{ $categorie->description ?? '-' }}</td>
             <td>{{ $categorie->formations()->count() }}</td>

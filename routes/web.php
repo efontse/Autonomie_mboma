@@ -43,7 +43,8 @@ Route::prefix('auth')->name('auth.')->group(function () {
 
 // ── Routes protégées (utilisatrice connectée) ─────────────
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/tableau-de-bord', [DashboardController::class, 'index'])->name('dashboard');
+    // Tableau de bord - accessible uniquement aux utilisateurs (pas aux modérateurs)
+    Route::get('/tableau-de-bord', [DashboardController::class, 'index'])->name('dashboard')->middleware('role:utilisateur');
 
     // Routes pour les informations (création, modification, suppression)
     Route::prefix('informations')->name('informations.')->group(function () {
@@ -56,17 +57,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // ── Routes utilisatrices (formations) ─────────────────────
+// Note: Les modérateurs n'ont pas accès à ces routes (ils gèrent les formations via admin)
 Route::middleware('auth')->prefix('formations')->name('formation.')->group(function () {
-    // Liste des formations
-    Route::get('/', [FormationController::class, 'index'])->name('index');
-    // Mes formations inscrites
-    Route::get('/mes-formations', [FormationController::class, 'mesFormations'])->name('mes-formations');
-    // Détail d'une formation
-    Route::get('/{formation}', [FormationController::class, 'show'])->name('show');
-    // S'inscrire à une formation
-    Route::post('/{formation}/inscrire', [FormationController::class, 'inscrire'])->name('inscrire');
-    // Mettre à jour la progression (AJAX)
-    Route::post('/{formation}/progression', [FormationController::class, 'progression'])->name('progression');
+    // Liste des formations - accessible uniquement aux utilisateurs (pas aux modérateurs)
+    Route::get('/', [FormationController::class, 'index'])->name('index')->middleware('role:utilisateur');
+    // Mes formations inscrites - accessible uniquement aux utilisateurs
+    Route::get('/mes-formations', [FormationController::class, 'mesFormations'])->name('mes-formations')->middleware('role:utilisateur');
+    // Détail d'une formation - accessible uniquement aux utilisateurs
+    Route::get('/{formation}', [FormationController::class, 'show'])->name('show')->middleware('role:utilisateur');
+    // S'inscrire à une formation - accessible uniquement aux utilisateurs
+    Route::post('/{formation}/inscrire', [FormationController::class, 'inscrire'])->name('inscrire')->middleware('role:utilisateur');
+    // Mettre à jour la progression (AJAX) - accessible uniquement aux utilisateurs
+    Route::post('/{formation}/progression', [FormationController::class, 'progression'])->name('progression')->middleware('role:utilisateur');
 });
 
 // ── Routes admin / modération ─────────────────────────────

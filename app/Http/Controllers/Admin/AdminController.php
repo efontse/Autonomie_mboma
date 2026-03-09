@@ -16,10 +16,16 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     /**
-     * Dashboard administrateur
+     * Dashboard - redirige selon le rôle
      */
     public function dashboard()
     {
+        // Rediriger vers le bon dashboard selon le rôle
+        if (Auth::user()->role === 'moderateur') {
+            return $this->moderatorDashboard();
+        }
+
+        // Dashboard admin complet
         $stats = [
             'utilisateurs' => User::count(),
             'formations' => Formation::count(),
@@ -84,6 +90,93 @@ class AdminController extends Controller
                 'formationsTerminees'
             )
         );
+    }
+
+    /**
+     * Dashboard modérateur - données limitées
+     */
+    public function moderatorDashboard()
+    {
+        $stats = [
+            'formations' => Formation::count(),
+            'informations' => \App\Models\Information::count(),
+            'inscriptions' => InscriptionFormation::count(),
+        ];
+
+        // Formations avec nombre d'inscriptions
+        $formationsPopulaires = Formation::withCount('inscriptions')
+            ->orderBy('inscriptions_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Inscriptions par catégorie
+        $categories = \App\Models\CategorieFormation::with('formations')->get();
+        $inscriptionsParCategorie = $categories->map(function($categorie) {
+            $inscriptions = 0;
+            foreach ($categorie->formations as $formation) {
+                $inscriptions += $formation->inscriptions()->count();
+            }
+            return [
+                'nom' => $categorie->nom,
+                'inscriptions' => $inscriptions
+            ];
+        });
+
+        // Inscriptions par mois (derniers 6 mois)
+        $inscriptionsParMois = InscriptionFormation::selectRaw(
+            "DATE_FORMAT(inscrit_le, '%Y-%m') as mois, COUNT(*) as total"
+        )
+            ->where('inscrit_le', '>=', now()->subMonths(6))
+            ->groupBy('mois')
+            ->orderBy('mois')
+            ->get();
+
+        // Total des inscriptions
+        $totalInscriptions = InscriptionFormation::count();
+
+        // Formations terminées
+        $formationsTerminees = InscriptionFormation::where('termine', true)->count();
+
+        return view('admin.dashboard-moderateur',
+            compact(
+                'stats',
+                'formationsPopulaires',
+                'inscriptionsParCategorie',
+                'inscriptionsParMois',
+                'totalInscriptions',
+                'formationsTerminees'
+            )
+        );
+    }
+
+    /**
+     * Profil de l'utilisateur connecté
+     */
+    public function profil()
+    {
+        $user = Auth::user();
+        return view('admin.profil', compact('user'));
+    }
+
+    /**
+     * Mettre à jour le profil
+     */
+    public function mettreAJourProfil(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'prenom' => 'required|string|max:255',
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+        ]);
+
+        $user->prenom = $request->prenom;
+        $user->nom = $request->nom;
+        $user->email = $request->email;
+        $user->save();
+
+        return redirect()->route('admin.profil')->with('success', 'Profil mis à jour avec succès.');
     }
 
     /**

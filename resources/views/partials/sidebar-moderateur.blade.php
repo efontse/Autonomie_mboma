@@ -26,14 +26,6 @@
   <nav class="sidebar-nav">
     <div class="nav-section-label">Modération</div>
 
-    <a class="nav-item" href="{{ route('dashboard') }}">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-        <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-      </svg>
-      Tableau de bord
-    </a>
-
     <a class="nav-item" href="{{ route('admin.dashboard') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -71,46 +63,9 @@
       Information (Voir)
     </a>
 
-    <div class="nav-item has-submenu" onclick="toggleSubmenu(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-      </svg>
-      Formation
-      <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="6 9 12 15 18 9"/>
-      </svg>
-    </div>
-    <div class="submenu">
-      <a class="nav-item submenu-item" href="{{ route('formation.index') }}">
-        Toutes les formations
-      </a>
-      <a class="nav-item submenu-item" href="{{ route('formation.mes-formations') }}">
-        Mes formations
-      </a>
-    </div>
-
-    <a class="nav-item" href="#">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="1" x2="12" y2="23"/>
-        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-      </svg>
-      Entrepreneuriat
-    </a>
-
-    <a class="nav-item" href="#">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-      </svg>
-      Communauté
-    </a>
-
     <div class="nav-section-label" style="margin-top:0.5rem">Mon compte</div>
 
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="{{ route('admin.profil') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
         <circle cx="12" cy="7" r="4"/>
@@ -141,5 +96,31 @@
     </form>
   </div>
 </aside>
+
+<style>
+.btn-deconnexion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--gris-clair);
+  border-radius: 6px;
+  color: var(--texte-doux);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.btn-deconnexion:hover {
+  background: #FEE2E2;
+  border-color: #FCA5A5;
+  color: #DC2626;
+}
+.btn-deconnexion svg { width: 14px; height: 14px; }
+</style>
 
 <div class="sidebar-overlay" id="overlay" onclick="fermerSidebar()"></div>

@@ -21,8 +21,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 // Routes accessibles aux administrateurs et modérateurs
 Route::middleware(['auth', 'role:admin,moderateur'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard
+    // Dashboard - different for admin and moderator
     Route::get('/tableau-de-bord', [AdminController::class, 'dashboard'])->name('dashboard');
+
+    // Profil
+    Route::get('/profil', [AdminController::class, 'profil'])->name('profil');
+    Route::put('/profil', [AdminController::class, 'mettreAJourProfil'])->name('profil.update');
 
     // Gestion des formations
     Route::get('/formations', [AdminController::class, 'formations'])->name('formations.index');
