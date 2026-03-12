@@ -85,7 +85,7 @@
               <a href="{{ route('admin.informations.edit', $information) }}" class="btn-action">Éditer</a>
               <form action="{{ route('admin.informations.destroy', $information) }}" method="POST" style="display:inline">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn-action btn-danger" onclick="return confirm('Êtes-vous sûr?')">Supprimer</button>
+                <button type="submit" class="btn-action btn-danger" onclick="event.preventDefault(); openConfirmModal('Êtes-vous sûr de vouloir supprimer cette information ? Cette action est irréversible.', () => this.closest('form').submit())">Supprimer</button>
               </form>
             </td>
           </tr>
@@ -100,5 +100,6 @@
 
     {{ $informations->links() }}
   </div>
+  @include('partials.confirm-modal')
 </body>
 </html>

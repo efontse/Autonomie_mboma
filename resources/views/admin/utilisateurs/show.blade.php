@@ -171,12 +171,13 @@
       <div class="danger-zone">
         <h3>Zone dangereuse</h3>
         <p>La suppression d'un utilisateur est irréversible. Toutes ses données seront perdues.</p>
-        <form action="{{ route('admin.utilisateurs.destroy', $user) }}" method="POST" style="display:inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')">
+        <form action="{{ route('admin.utilisateurs.destroy', $user) }}" method="POST" style="display:inline" onsubmit="event.preventDefault(); openConfirmModal('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.', () => this.submit())">
           @csrf @method('DELETE')
           <button type="submit" class="btn btn-danger">Supprimer cet utilisateur</button>
         </form>
       </div>
     </div>
   </div>
+  @include('partials.confirm-modal')
 </body>
 </html>

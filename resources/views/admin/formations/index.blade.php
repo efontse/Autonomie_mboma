@@ -93,7 +93,7 @@
               <a href="{{ route('admin.formations.edit', $formation) }}" class="btn-action">Éditer</a>
               <form action="{{ route('admin.formations.destroy', $formation) }}" method="POST" style="display:inline">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn-action btn-danger" onclick="return confirm('Êtes-vous sûr?')">Supprimer</button>
+                <button type="submit" class="btn-action btn-danger" onclick="event.preventDefault(); openConfirmModal('Êtes-vous sûr de vouloir supprimer cette formation ? Cette action est irréversible.', () => this.closest('form').submit())">Supprimer</button>
               </form>
             </td>
           </tr>
@@ -108,5 +108,6 @@
 
     {{ $formations->links() }}
   </div>
+  @include('partials.confirm-modal')
 </body>
 </html>

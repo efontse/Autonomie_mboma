@@ -700,7 +700,7 @@
   }
 
   // Charger les utilisateurs au démarrage
-  let allUsers = [];
+  // La variable allUsers est déjà déclarée plus haut
 
   // Ajouter l'écouteur d'événement pour le bouton nouvelle conversation
   document.getElementById('new-chat-btn')?.addEventListener('click', openNewChatModal);
@@ -775,7 +775,7 @@ async function loadUsers() {
     }
   }
 
-  let modalUsers = [];
+  // La variable modalUsers est déjà déclarée plus haut
 
   async function loadUsersForModal() {
     try {

@@ -137,12 +137,13 @@
             <hr style="border:none; border-top:1px solid var(--gris-clair); margin:0.5rem 0;">
             <form action="{{ route('admin.entrepreneuriat.annonces.destroy', $annonce) }}" method="POST">
               @csrf @method('DELETE')
-              <button type="submit" class="btn btn-danger" style="width:100%; background:#FEE2E2; color:#DC2626;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce? Cette action est irréversible.')">🗑 Supprimer l'annonce</button>
+              <button type="submit" class="btn btn-danger" style="width:100%; background:#FEE2E2; color:#DC2626;" onclick="event.preventDefault(); openConfirmModal('Êtes-vous sûr de vouloir supprimer cette annonce ? Cette action est irréversible.', () => this.closest('form').submit())">🗑 Supprimer l'annonce</button>
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
+  @include('partials.confirm-modal')
 </body>
 </html>

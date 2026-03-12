@@ -50,7 +50,7 @@
     }
 
     .card-image {
-      height:160px; background:var(--creme); position:relative; overflow:hidden;
+      height:240px; background:var(--creme); position:relative; overflow:hidden;
     }
     .card-image img {
       width:100%; height:100%; object-fit:cover;
@@ -284,7 +284,7 @@
     @else
       <div class="informations-grid">
         @foreach($informations as $information)
-          <article class="information-card">
+          <article class="information-card" data-categorie="{{ $information->type }}">
             <div class="card-image">
               @if($information->image_url)
                 <img src="{{ $information->image_url }}" alt="{{ $information->titre }}"/>
@@ -337,6 +337,28 @@
       document.getElementById('sidebar').classList.remove('open');
       document.getElementById('overlay').classList.remove('visible');
     }
+
+    // Filtrage des informations
+    document.querySelectorAll('.filtre').forEach(btn => {
+      btn.addEventListener('click', function() {
+        // Mise à jour du style des boutons
+        document.querySelectorAll('.filtre').forEach(b => b.classList.remove('actif'));
+        this.classList.add('actif');
+
+        const filtre = this.textContent.trim();
+        const cards = document.querySelectorAll('.information-card');
+
+        cards.forEach(card => {
+          const categorie = card.dataset.categorie || '';
+
+          if (filtre === 'Toutes' || categorie === filtre) {
+            card.style.display = '';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
   </script>
 </body>
 </html>

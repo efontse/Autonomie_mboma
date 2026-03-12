@@ -128,7 +128,7 @@
             </form>
             <form action="{{ route('admin.entrepreneuriat.projets.rejeter', $projet) }}" method="POST">
               @csrf @method('PATCH')
-              <button type="submit" class="btn btn-danger" style="width:100%;" onclick="return confirm('Voulez-vous vraiment rejeter ce projet?')">✗ Rejeter le projet</button>
+              <button type="submit" class="btn btn-danger" style="width:100%;" onclick="event.preventDefault(); openConfirmModal('Voulez-vous vraiment rejeter ce projet ?', () => this.closest('form').submit())">✗ Rejeter le projet</button>
             </form>
             @elseif($projet->statut === 'approuve')
             <form action="{{ route('admin.entrepreneuriat.projets.attendre', $projet) }}" method="POST">
@@ -144,12 +144,13 @@
             <hr style="border:none; border-top:1px solid var(--gris-clair); margin:0.5rem 0;">
             <form action="{{ route('admin.entrepreneuriat.projets.destroy', $projet) }}" method="POST">
               @csrf @method('DELETE')
-              <button type="submit" class="btn btn-danger" style="width:100%; background:#FEE2E2; color:#DC2626;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce projet? Cette action est irréversible.')">🗑 Supprimer le projet</button>
+              <button type="submit" class="btn btn-danger" style="width:100%; background:#FEE2E2; color:#DC2626;" onclick="event.preventDefault(); openConfirmModal('Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.', () => this.closest('form').submit())">🗑 Supprimer le projet</button>
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
+  @include('partials.confirm-modal')
 </body>
 </html>

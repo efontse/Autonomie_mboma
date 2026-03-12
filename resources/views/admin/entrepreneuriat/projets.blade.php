@@ -127,7 +127,7 @@
               </form>
               <form action="{{ route('admin.entrepreneuriat.projets.rejeter', $projet) }}" method="POST" style="display:inline">
                 @csrf @method('PATCH')
-                <button type="submit" class="btn-action btn-danger" title="Rejeter" onclick="return confirm('Voulez-vous vraiment rejeter ce projet?')">✗</button>
+                <button type="submit" class="btn-action btn-danger" title="Rejeter" onclick="event.preventDefault(); openConfirmModal('Voulez-vous vraiment rejeter ce projet ?', () => this.closest('form').submit())">✗</button>
               </form>
               @elseif($projet->statut === 'approuve')
               <form action="{{ route('admin.entrepreneuriat.projets.attendre', $projet) }}" method="POST" style="display:inline">
@@ -142,7 +142,7 @@
               @endif
               <form action="{{ route('admin.entrepreneuriat.projets.destroy', $projet) }}" method="POST" style="display:inline">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn-action btn-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce projet?')">🗑</button>
+                <button type="submit" class="btn-action btn-danger" title="Supprimer" onclick="event.preventDefault(); openConfirmModal('Êtes-vous sûr de vouloir supprimer ce projet ?', () => this.closest('form').submit())">🗑</button>
               </form>
             </td>
           </tr>
@@ -157,5 +157,6 @@
 
     {{ $projets->links() }}
   </div>
+  @include('partials.confirm-modal')
 </body>
 </html>

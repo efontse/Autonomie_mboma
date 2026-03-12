@@ -50,7 +50,7 @@
     }
 
     .card-image {
-      height:160px; background:var(--creme); position:relative; overflow:hidden;
+      height:240px; background:var(--creme); position:relative; overflow:hidden;
     }
     .card-image img {
       width:100%; height:100%; object-fit:cover;

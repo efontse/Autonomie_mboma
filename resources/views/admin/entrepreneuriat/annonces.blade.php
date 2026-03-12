@@ -126,7 +126,7 @@
               @endif
               <form action="{{ route('admin.entrepreneuriat.annonces.destroy', $annonce) }}" method="POST" style="display:inline">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn-action btn-danger" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette annonce?')">🗑</button>
+                <button type="submit" class="btn-action btn-danger" title="Supprimer" onclick="event.preventDefault(); openConfirmModal('Êtes-vous sûr de vouloir supprimer cette annonce ?', () => this.closest('form').submit())">🗑</button>
               </form>
             </td>
           </tr>
@@ -141,5 +141,6 @@
 
     {{ $annonces->links() }}
   </div>
+  @include('partials.confirm-modal')
 </body>
 </html>

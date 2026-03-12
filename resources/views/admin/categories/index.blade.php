@@ -103,7 +103,7 @@
             <td class="actions">
               <form action="{{ route('admin.categories.destroy', $categorie) }}" method="POST">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn-action btn-danger" onclick="return confirm('Êtes-vous sûr?')" {{ $categorie->formations()->count() > 0 ? 'disabled' : '' }}>Supprimer</button>
+                <button type="submit" class="btn-action btn-danger" onclick="event.preventDefault(); openConfirmModal('Êtes-vous sûr de vouloir supprimer cette catégorie ?', () => this.closest('form').submit())" {{ $categorie->formations()->count() > 0 ? 'disabled' : '' }}>Supprimer</button>
               </form>
             </td>
           </tr>
@@ -116,5 +116,6 @@
       </table>
     </div>
   </div>
+  @include('partials.confirm-modal')
 </body>
 </html>
