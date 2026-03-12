@@ -20,8 +20,11 @@ class AdminController extends Controller
      */
     public function dashboard()
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
         // Rediriger vers le bon dashboard selon le rôle
-        if (Auth::user()->role === 'moderateur') {
+        if ($user && $user->role === 'moderateur') {
             return $this->moderatorDashboard();
         }
 
@@ -183,6 +186,7 @@ class AdminController extends Controller
      */
     public function profil()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         return view('admin.profil', compact('user'));
     }
@@ -192,7 +196,12 @@ class AdminController extends Controller
      */
     public function mettreAJourProfil(Request $request)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
+
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Vous devez être connecté pour modifier votre profil.');
+        }
 
         $request->validate([
             'prenom' => 'required|string|max:255',
