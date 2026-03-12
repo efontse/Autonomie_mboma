@@ -357,7 +357,7 @@
       <div class="page-header">
         <h1 class="page-title">Mes notifications</h1>
         @if($notifications->where('lu', false)->count() > 0)
-        <button class="btn-mark-all" onclick="markAllAsRead()">
+        <button class="btn-mark-all" id="mark-all-as-read-btn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="9 11 12 14 22 4"></polyline>
             <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
@@ -414,14 +414,14 @@
 
               <div class="notification-actions">
                 @if(!$notification->lu)
-                <button class="btn-icon" title="Marquer comme lu" onclick="markAsRead({{ $notification->id }})">
+                <button class="btn-icon mark-as-read-btn" title="Marquer comme lu" data-id="{{ $notification->id }}">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="9 11 12 14 22 4"></polyline>
                     <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
                   </svg>
                 </button>
                 @endif
-                <button class="btn-icon delete" title="Supprimer" onclick="deleteNotification({{ $notification->id }})">
+                <button class="btn-icon delete delete-notification-btn" title="Supprimer" data-id="{{ $notification->id }}">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="3 6 5 6 21 6"></polyline>
                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -454,18 +454,51 @@
 <script>
   const CSRF_TOKEN = '{{ csrf_token() }}';
 
+  // Mark as read button click handler
+  document.addEventListener('click', function(e) {
+    var target = e.target.closest('.mark-as-read-btn');
+    if (target) {
+      var id = target.getAttribute('data-id');
+      if (id) {
+        markAsRead(parseInt(id));
+      }
+    }
+  });
+
+  // Delete notification button click handler
+  document.addEventListener('click', function(e) {
+    var target = e.target.closest('.delete-notification-btn');
+    if (target) {
+      var id = target.getAttribute('data-id');
+      if (id) {
+        deleteNotification(parseInt(id));
+      }
+    }
+  });
+
+  // Mark all as read button click handler
+  document.addEventListener('click', function(e) {
+    var target = e.target.closest('#mark-all-as-read-btn');
+    if (target) {
+      markAllAsRead();
+    }
+  });
+
   function markAsRead(id) {
-    fetch(`/notifications/${id}/read`, {
+    fetch('/notifications/' + id + '/read', {
       method: 'POST',
       headers: {
         'X-CSRF-TOKEN': CSRF_TOKEN,
         'Accept': 'application/json'
       }
     })
-    .then(res => res.json())
-    .then(data => {
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
       if (data.success) {
-        document.getElementById(`notification-${id}`).classList.remove('unread');
+        var element = document.getElementById('notification-' + id);
+        if (element) {
+          element.classList.remove('unread');
+        }
         updateHeader();
       }
     });
@@ -479,30 +512,37 @@
         'Accept': 'application/json'
       }
     })
-    .then(res => res.json())
-    .then(data => {
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
       if (data.success) {
-        document.querySelectorAll('.notification-card.unread').forEach(el => {
+        var elements = document.querySelectorAll('.notification-card.unread');
+        elements.forEach(function(el) {
           el.classList.remove('unread');
         });
-        document.querySelector('.btn-mark-all').style.display = 'none';
+        var btn = document.querySelector('.btn-mark-all');
+        if (btn) {
+          btn.style.display = 'none';
+        }
       }
     });
   }
 
   function deleteNotification(id) {
     if (confirm('Voulez-vous vraiment supprimer cette notification ?')) {
-      fetch(`/notifications/${id}`, {
+      fetch('/notifications/' + id, {
         method: 'DELETE',
         headers: {
           'X-CSRF-TOKEN': CSRF_TOKEN,
           'Accept': 'application/json'
         }
       })
-      .then(res => res.json())
-      .then(data => {
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
         if (data.success) {
-          document.getElementById(`notification-${id}`).remove();
+          var element = document.getElementById('notification-' + id);
+          if (element) {
+            element.remove();
+          }
         }
       });
     }
