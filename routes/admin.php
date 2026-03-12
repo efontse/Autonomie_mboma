@@ -48,4 +48,23 @@ Route::middleware(['auth', 'role:admin,moderateur'])->prefix('admin')->name('adm
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
     Route::post('/categories', [AdminController::class, 'creerCategorie'])->name('categories.store');
     Route::delete('/categories/{categorie}', [AdminController::class, 'supprimerCategorie'])->name('categories.destroy');
+
+    // ═══════════════════════════════════════════════════════
+    // GESTION DU MODULE ENTREPRENEURIAT
+    // ═══════════════════════════════════════════════════════
+
+    // Projets entrepreneuriaux
+    Route::get('/projets', [AdminController::class, 'projets'])->name('entrepreneuriat.projets.index');
+    Route::get('/projets/{projet}', [AdminController::class, 'voirProjet'])->name('entrepreneuriat.projets.show');
+    Route::patch('/projets/{projet}/approuver', [AdminController::class, 'approuverProjet'])->name('entrepreneuriat.projets.approuver');
+    Route::patch('/projets/{projet}/rejeter', [AdminController::class, 'rejeterProjet'])->name('entrepreneuriat.projets.rejeter');
+    Route::patch('/projets/{projet}/attendre', [AdminController::class, 'mettreEnAttenteProjet'])->name('entrepreneuriat.projets.attendre');
+    Route::delete('/projets/{projet}', [AdminController::class, 'supprimerProjet'])->name('entrepreneuriat.projets.destroy');
+
+    // Annonces
+    Route::get('/annonces', [AdminController::class, 'annonces'])->name('entrepreneuriat.annonces.index');
+    Route::get('/annonces/{annonce}', [AdminController::class, 'voirAnnonce'])->name('entrepreneuriat.annonces.show');
+    Route::patch('/annonces/{annonce}/activer', [AdminController::class, 'activerAnnonce'])->name('entrepreneuriat.annonces.activer');
+    Route::patch('/annonces/{annonce}/desactiver', [AdminController::class, 'desactiverAnnonce'])->name('entrepreneuriat.annonces.desactiver');
+    Route::delete('/annonces/{annonce}', [AdminController::class, 'supprimerAnnonce'])->name('entrepreneuriat.annonces.destroy');
 });

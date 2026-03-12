@@ -50,6 +50,16 @@ class User extends Authenticatable
         return $this->hasMany(ProjetEntrepreneurial::class, 'user_id');
     }
 
+    public function projetsEntrepreneuriaux(): HasMany
+    {
+        return $this->hasMany(ProjetEntrepreneurial::class, 'user_id');
+    }
+
+    public function annonces(): HasMany
+    {
+        return $this->hasMany(Annonce::class, 'user_id');
+    }
+
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class, 'user_id');

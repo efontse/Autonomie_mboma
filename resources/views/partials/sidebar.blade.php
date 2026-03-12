@@ -39,7 +39,7 @@
       Tableau de bord
     </a>
 
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="{{ route('profil') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
         <circle cx="12" cy="7" r="4"/>
@@ -47,7 +47,7 @@
       Mon profil
     </a>
 
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="{{ route('notifications.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -85,7 +85,7 @@
       </a>
     </div>
 
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="{{ route('entrepreneuriat.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="1" x2="12" y2="23"/>
         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -93,7 +93,7 @@
       Entrepreneuriat
     </a>
 
-    <a class="nav-item" href="#">
+    <a class="nav-item" href="{{ route('communaute.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
         <circle cx="9" cy="7" r="4"/>
@@ -101,6 +101,13 @@
         <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
       Communauté
+    </a>
+
+    <a class="nav-item" href="{{ route('messagerie.index') }}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+      Messagerie
     </a>
 
     @if(Auth::user()->estModerateur())

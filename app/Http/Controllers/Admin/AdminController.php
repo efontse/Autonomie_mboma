@@ -32,8 +32,33 @@ class AdminController extends Controller
             'informations' => \App\Models\Information::count(),
             'publications' => \App\Models\Publication::count(),
             'projets' => \App\Models\ProjetEntrepreneurial::count(),
+            'annonces' => \App\Models\Annonce::count(),
             'inscriptions' => InscriptionFormation::count(),
         ];
+
+        // Statistiques entrepreneuriat - projets par statut
+        $projetsParStatut = \App\Models\ProjetEntrepreneurial::select('statut')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('statut')
+            ->get();
+
+        // Statistiques entrepreneuriat - annonces par statut
+        $annoncesParStatut = \App\Models\Annonce::select('statut')
+            ->selectRaw('COUNT(*) as total')
+            ->groupBy('statut')
+            ->get();
+
+        // Projets récents
+        $projetsRecents = \App\Models\ProjetEntrepreneurial::with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Annonces récentes
+        $annoncesRecentes = \App\Models\Annonce::with('user')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
 
         // Derniers utilisateurs inscrits
         $derniersUtilisateurs = User::orderBy('created_at', 'desc')->limit(5)->get();
@@ -87,7 +112,11 @@ class AdminController extends Controller
                 'inscriptionsParCategorie',
                 'inscriptionsParMois',
                 'totalInscriptions',
-                'formationsTerminees'
+                'formationsTerminees',
+                'projetsParStatut',
+                'annoncesParStatut',
+                'projetsRecents',
+                'annoncesRecentes'
             )
         );
     }
@@ -458,5 +487,133 @@ class AdminController extends Controller
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Catégorie supprimée avec succès.');
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // GESTION DES PROJETS ENTREPRENEURIAUX (BACKOFFICE)
+    // ═══════════════════════════════════════════════════════
+
+    /**
+     * Liste des projets entrepreneuriaux
+     */
+    public function projets()
+    {
+        $projets = ProjetEntrepreneurial::with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+        return view('admin.entrepreneuriat.projets', compact('projets'));
+    }
+
+    /**
+     * Afficher un projet
+     */
+    public function voirProjet(ProjetEntrepreneurial $projet)
+    {
+        return view('admin.entrepreneuriat.projet-show', compact('projet'));
+    }
+
+    /**
+     * Approuver un projet
+     */
+    public function approuverProjet(ProjetEntrepreneurial $projet)
+    {
+        $projet->statut = 'approuve';
+        $projet->save();
+
+        return redirect()->back()
+            ->with('success', 'Projet approuvé avec succès.');
+    }
+
+    /**
+     * Rejeter un projet
+     */
+    public function rejeterProjet(ProjetEntrepreneurial $projet)
+    {
+        $projet->statut = 'rejete';
+        $projet->save();
+
+        return redirect()->back()
+            ->with('success', 'Projet rejeté avec succès.');
+    }
+
+    /**
+     * Mettre en attente un projet
+     */
+    public function mettreEnAttenteProjet(ProjetEntrepreneurial $projet)
+    {
+        $projet->statut = 'en_attente';
+        $projet->save();
+
+        return redirect()->back()
+            ->with('success', 'Projet mis en attente.');
+    }
+
+    /**
+     * Supprimer un projet
+     */
+    public function supprimerProjet(ProjetEntrepreneurial $projet)
+    {
+        $projet->delete();
+
+        return redirect()->route('admin.entrepreneuriat.projets')
+            ->with('success', 'Projet supprimé avec succès.');
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // GESTION DES ANNONCES (BACKOFFICE)
+    // ═══════════════════════════════════════════════════════
+
+    /**
+     * Liste des annonces
+     */
+    public function annonces()
+    {
+        $annonces = \App\Models\Annonce::with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+        return view('admin.entrepreneuriat.annonces', compact('annonces'));
+    }
+
+    /**
+     * Afficher une annonce
+     */
+    public function voirAnnonce(\App\Models\Annonce $annonce)
+    {
+        return view('admin.entrepreneuriat.annonce-show', compact('annonce'));
+    }
+
+    /**
+     * Activer une annonce
+     */
+    public function activerAnnonce(\App\Models\Annonce $annonce)
+    {
+        $annonce->statut = 'actif';
+        $annonce->save();
+
+        return redirect()->back()
+            ->with('success', 'Annonce activée avec succès.');
+    }
+
+    /**
+     * Désactiver une annonce
+     */
+    public function desactiverAnnonce(\App\Models\Annonce $annonce)
+    {
+        $annonce->statut = 'inactif';
+        $annonce->save();
+
+        return redirect()->back()
+            ->with('success', 'Annonce désactivée avec succès.');
+    }
+
+    /**
+     * Supprimer une annonce
+     */
+    public function supprimerAnnonce(\App\Models\Annonce $annonce)
+    {
+        $annonce->delete();
+
+        return redirect()->route('admin.entrepreneuriat.annonces')
+            ->with('success', 'Annonce supprimée avec succès.');
     }
 }

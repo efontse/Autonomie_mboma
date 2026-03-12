@@ -6,6 +6,7 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Connexion — Plateforme Mboma</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
     :root {
       --terre:#8B4513; --savane:#C8860A; --ocre:#D4A853;
@@ -21,10 +22,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 0.5rem;
       position: relative;
       overflow-x: hidden;
-      overflow-y: auto;
     }
     body::before {
       content:'';
@@ -47,15 +47,16 @@
       display: flex;
       max-width: 900px;
       width: 100%;
+      max-height: 100vh;
+      overflow: hidden;
       background: var(--blanc);
       border-radius: 20px;
-      overflow: hidden;
       box-shadow: 0 30px 80px rgba(0,0,0,0.5);
     }
     .deco {
       width: 38%;
       background: linear-gradient(160deg, var(--vert) 0%, #1a4030 60%, #0e2a1e 100%);
-      padding: 3rem 2rem;
+      padding: 1.5rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -81,21 +82,21 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
     }
     .logo-cercle {
-      width: 80px; height: 80px;
+      width: 60px; height: 60px;
       background: linear-gradient(135deg, var(--savane), var(--ocre));
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1rem;
-      font-size: 2.2rem;
+      margin: 0 auto 0.75rem;
+      font-size: 1.6rem;
       box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }
     .deco h2 {
       font-family: 'Playfair Display', serif;
       color: var(--blanc);
-      font-size: 1.4rem;
+      font-size: 1.2rem;
       line-height: 1.25;
     }
     .deco-sous {
@@ -114,22 +115,21 @@
     .deco-avantages li {
       display: flex;
       align-items: center;
-      gap: 0.7rem;
+      gap: 0.5rem;
       color: rgba(255,255,255,0.8);
-      font-size: 0.82rem;
-      padding: 0.55rem 0;
+      font-size: 0.75rem;
+      padding: 0.35rem 0;
       border-bottom: 1px solid rgba(255,255,255,0.08);
     }
     .deco-avantages li:last-child { border-bottom: none; }
     .deco-avantages .ico-av { font-size: 1rem; width: 22px; text-align: center; }
     .form-zone {
       flex: 1;
-      padding: 3.5rem 3rem;
+      padding: 2.5rem 2rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
       background: var(--creme);
-      overflow-y: auto;
     }
     .form-titre h1 {
       font-family: 'Playfair Display', serif;
@@ -137,7 +137,7 @@
       color: var(--brun-fonce);
       margin-bottom: 0.3rem;
     }
-    .form-titre p { color: var(--gris); font-size: 0.88rem; margin-bottom: 2rem; }
+    .form-titre p { color: var(--gris); font-size: 0.88rem; margin-bottom: 1.2rem; }
     .form-titre a { color: var(--vert); font-weight: 600; text-decoration: none; }
     .form-titre a:hover { text-decoration: underline; }
     .alerte {
@@ -149,7 +149,7 @@
     }
     .alerte.erreur { background:#fdecea; color:var(--erreur); border:1px solid #f5c6c2; display:block; }
     .alerte.succes { background:#e6f9ef; color:var(--succes); border:1px solid #b7eecf; display:block; }
-    .champ { margin-bottom: 1.2rem; }
+    .champ { margin-bottom: 0.9rem; }
     label {
       display: block;
       font-size: 0.82rem;
@@ -240,11 +240,11 @@
     .inscription-pied a:hover { text-decoration: underline; }
 
     @media (max-width: 700px) {
-      body { padding: 0; align-items: stretch; }
-      .carte { flex-direction: column; border-radius: 0; min-height: 100vh; box-shadow: none; }
-      .deco { width: 100%; padding: 2rem; flex-direction: row; flex-wrap: wrap; gap: 1rem; min-height: auto; }
+      body { padding: 0; align-items: stretch; overflow-y: hidden; }
+      .carte { flex-direction: column; border-radius: 0; height: 100vh; box-shadow: none; }
+      .deco { width: 100%; padding: 1rem; flex-direction: row; flex-wrap: wrap; gap: 0.5rem; min-height: auto; }
       .deco-avantages { display: none; }
-      .form-zone { padding: 2rem 1.5rem; min-height: auto; }
+      .form-zone { padding: 1.5rem 1rem; min-height: auto; }
     }
   </style>
 </head>
@@ -257,23 +257,23 @@
   <div class="deco">
     <div class="deco-motif"></div>
     <div class="deco-logo">
-      <div class="logo-cercle">🌸</div>
+      <div class="logo-cercle"><i class="bi bi-flower1"></i></div>
       <h2>Plateforme<br>Mboma</h2>
       <div class="deco-sous">Arrondissement de Mboma</div>
     </div>
     <ul class="deco-avantages">
-      <li><span class="ico-av">📚</span> Formations gratuites accessibles</li>
-      <li><span class="ico-av">💡</span> Accompagnement entrepreneurial</li>
-      <li><span class="ico-av">🤝</span> Communauté solidaire</li>
-      <li><span class="ico-av">📢</span> Informations locales fiables</li>
-      <li><span class="ico-av">🔒</span> Espace sécurisé et confidentiel</li>
+      <li><span class="ico-av"><i class="bi bi-book"></i></span> Formations gratuites accessibles</li>
+      <li><span class="ico-av"><i class="bi bi-lightbulb"></i></span> Accompagnement entrepreneurial</li>
+      <li><span class="ico-av"><i class="bi bi-people"></i></span> Communauté solidaire</li>
+      <li><span class="ico-av"><i class="bi bi-megaphone"></i></span> Informations locales fiables</li>
+      <li><span class="ico-av"><i class="bi bi-shield-lock"></i></span> Espace sécurisé et confidentiel</li>
     </ul>
   </div>
 
   <!-- Formulaire de connexion -->
   <div class="form-zone">
     <div class="form-titre">
-      <h1>Bon retour 👋</h1>
+      <h1>Bon retour <i class="bi bi-emoji-smile"></i></h1>
       <p>Connectez-vous à votre espace personnel.<br>
         Pas encore de compte ? <a href="{{ route('auth.inscription') }}">S'inscrire gratuitement</a>
       </p>
@@ -288,7 +288,7 @@
       <div class="champ">
         <label for="email">Adresse e-mail</label>
         <div class="input-wrap">
-          <span class="ico">✉️</span>
+          <span class="ico"><i class="bi bi-envelope"></i></span>
           <input type="email" id="email" name="email"
                  placeholder="vous@exemple.cm" autocomplete="email"/>
         </div>
@@ -301,10 +301,10 @@
           <a href="{{ route('auth.reset.form') }}" class="lien-oublie">Mot de passe oublié ?</a>
         </div>
         <div class="input-wrap">
-          <span class="ico">🔒</span>
+          <span class="ico"><i class="bi bi-lock"></i></span>
           <input type="password" id="mot_de_passe" name="mot_de_passe"
                  placeholder="Votre mot de passe" autocomplete="current-password"/>
-          <span class="toggle-mdp" onclick="basculerMdp()" id="toggle-ico">👁️</span>
+          <span class="toggle-mdp" onclick="basculerMdp()" id="toggle-ico"><i class="bi bi-eye"></i></span>
         </div>
         <span class="msg-erreur" id="err-mdp">Mot de passe requis.</span>
       </div>
@@ -315,7 +315,7 @@
       </div>
 
       <button type="submit" class="btn-connexion" id="btn-cnx">
-        Se connecter
+        <i class="bi bi-box-arrow-in-right"></i> Se connecter
       </button>
 
     </form>
@@ -334,7 +334,7 @@
   function basculerMdp() {
     mdpVisible = !mdpVisible;
     document.getElementById('mot_de_passe').type = mdpVisible ? 'text' : 'password';
-    document.getElementById('toggle-ico').textContent = mdpVisible ? '🙈' : '👁️';
+    document.getElementById('toggle-ico').innerHTML = mdpVisible ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
   }
 
   // ── Validation front-end ─────────────────────────────────
@@ -368,7 +368,7 @@
 
     // Désactiver le bouton pendant l'envoi
     btn.disabled = true;
-    btn.textContent = '⏳ Connexion en cours…';
+    btn.innerHTML = '<i class="bi bi-arrow-repeat"></i> Connexion en cours...';
     alerte.className = 'alerte';
     alerte.style.display = 'none';
 
@@ -387,28 +387,28 @@
       const data = await response.json();
 
       if (data.success) {
-        // ✅ Connexion réussie
+        // Connexion reussie
         alerte.className = 'alerte succes';
-        alerte.textContent = '✅ ' + data.message;
+        alerte.innerHTML = '<i class="bi bi-check-circle-fill"></i> ' + data.message;
         alerte.style.display = 'block';
         setTimeout(() => { window.location.href = data.redirect; }, 1000);
 
       } else {
-        // ❌ Identifiants incorrects ou compte suspendu
+        // Identifiants incorrects ou compte suspendu
         alerte.className = 'alerte erreur';
-        alerte.textContent = '❌ ' + (data.message || 'Une erreur est survenue.');
+        alerte.innerHTML = '<i class="bi bi-x-circle-fill"></i> ' + (data.message || 'Une erreur est survenue.');
         alerte.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Se connecter';
+        btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Se connecter';
       }
 
     } catch (erreur) {
-      // ❌ Erreur réseau ou serveur inaccessible
+      // Erreur reseau ou serveur inaccessible
       alerte.className = 'alerte erreur';
-      alerte.textContent = '❌ Erreur réseau. Vérifiez votre connexion et réessayez.';
+      alerte.innerHTML = '<i class="bi bi-wifi-off"></i> Erreur réseau. Vérifiez votre connexion et réessayez.';
       alerte.style.display = 'block';
       btn.disabled = false;
-      btn.textContent = 'Se connecter';
+      btn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> Se connecter';
     }
   });
 </script>

@@ -540,12 +540,15 @@
         </div>
       </div>
       <div class="topbar-droite">
-        <div class="btn-notif">
+        <a href="{{ route('notifications.index') }}" class="btn-notif" title="Notifications">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
-        </div>
+          @if(($notificationsStats['unread'] ?? 0) > 0)
+          <span class="notif-dot"></span>
+          @endif
+        </a>
         <div class="topbar-avatar">
           {{ strtoupper(substr(Auth::user()->prenom, 0, 1)) }}
         </div>
@@ -618,13 +621,25 @@
         </div>
 
         <div class="stat-card rose anim anim-5">
+          <a href="{{ route('notifications.index') }}" style="text-decoration:none;color:inherit;">
           <div class="stat-icone rose">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+              <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
             </svg>
           </div>
-          <div class="stat-nombre">{{ Auth::user()->notifications()->count() }}</div>
-          <div class="stat-label">Notifications</div>
+          <div class="stat-nombre">{{ $notificationsStats['unread'] ?? 0 }}</div>
+          <div class="stat-label">Notifications non lues</div>
+          @if(($notificationsStats['total'] ?? 0) > 0)
+          <div class="stat-sous">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+            {{ $notificationsStats['total'] ?? 0 }} au total
+          </div>
+          @endif
+          </a>
         </div>
       </div>
 
@@ -656,7 +671,7 @@
             </div>
           </a>
 
-          <a href="#" class="module-card formation">
+          <a href="{{ route('formation.index') }}" class="module-card formation">
             <div class="module-icone-wrap formation">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
@@ -673,7 +688,7 @@
             </div>
           </a>
 
-          <a href="#" class="module-card entreprise">
+          <a href="{{ route('entrepreneuriat.index') }}" class="module-card entreprise">
             <div class="module-icone-wrap entreprise">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <line x1="12" y1="1" x2="12" y2="23"/>
@@ -690,7 +705,7 @@
             </div>
           </a>
 
-          <a href="#" class="module-card communaute">
+          <a href="{{ route('communaute.index') }}" class="module-card communaute">
             <div class="module-icone-wrap communaute">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
@@ -702,6 +717,10 @@
             <div>
               <div class="module-nom">Communauté</div>
               <div class="module-desc">Échanges, témoignages et entraide</div>
+              <div class="module-stats" style="margin-top: 0.5rem; display: flex; gap: 1rem; font-size: 0.7rem; color: var(--texte-doux);">
+                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:3px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> {{ $communityStats['posts'] ?? 0 }} posts</span>
+                <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:3px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg> {{ $communityStats['myPosts'] ?? 0 }} mes posts</span>
+              </div>
             </div>
             <div class="module-fleche communaute">
               Accéder
