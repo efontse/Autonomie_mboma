@@ -335,6 +335,78 @@
       color: var(--gris-clair);
     }
 
+    /* Modal pour nouvelle conversation */
+    .new-chat-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .new-chat-modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: var(--blanc);
+      border-radius: 12px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-header {
+      padding: 1rem;
+      border-bottom: 1px solid var(--gris-clair);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      color: var(--brun-fonce);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gris);
+    }
+    .modal-body {
+      padding: 1rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .user-search {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--gris-clair);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-family: inherit;
+    }
+    .user-search:focus {
+      outline: none;
+      border-color: var(--vert);
+    }
+    .user-list-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .user-list-item:hover {
+      background: var(--gris-clair);
+    }
+
     @media (max-width: 900px) {
       .messagerie-container {
         grid-template-columns: 1fr;
@@ -355,11 +427,14 @@
 <div class="messagerie-container">
   <!-- Sidebar utilisateurs -->
   <div class="sidebar-users">
-    <div class="sidebar-header">
-      <i class="bi bi-people"></i> Utilisateurs
+    <div class="sidebar-header" style="display:flex; justify-content:space-between; align-items:center;">
+      <span><i class="bi bi-people"></i> Utilisateurs</span>
+      <button onclick="if(typeof openNewChatModal === 'function'){openNewChatModal();}else{alert('Chargement...')}" style="background:none; border:none; cursor:pointer; color:var(--vert); font-size:1.2rem;" title="Nouvelle conversation">
+        <i class="bi bi-plus-circle"></i>
+      </button>
     </div>
     <div id="users-list">
-      <!-- Liste des utilisateurs à ajouter via JS -->
+      <!-- Liste des utilisateurs chargée via JS -->
     </div>
   </div>
 
@@ -425,7 +500,131 @@
 </div>
 
 <script>
-  const conversationId = {{ isset($conversation) ? $conversation->id : null }};
+  // Définir les fonctions en premier
+  function openNewChatModal() {
+    const modal = document.getElementById('new-chat-modal');
+    if (modal) {
+      modal.classList.add('active');
+      loadUsersForModal();
+    }
+  }
+
+  function closeNewChatModal() {
+    const modal = document.getElementById('new-chat-modal');
+    if (modal) {
+      modal.classList.remove('active');
+    }
+  }
+
+  let allUsers = [];
+  let modalUsers = [];
+
+  async function loadUsers() {
+    try {
+      const response = await fetch('{{ route('messagerie.api.utilisateurs') }}', {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        allUsers = data.users;
+        displayUsers(allUsers);
+      }
+    } catch (error) {
+      console.error('Erreur chargement utilisateurs:', error);
+    }
+  }
+
+  function displayUsers(users) {
+    const container = document.getElementById('users-list');
+    if (!users || users.length === 0) {
+      container.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--gris);">Aucun utilisateur</div>';
+      return;
+    }
+
+    container.innerHTML = users.map(user => `
+      <div class="user-item" onclick="startConversation(${user.id})">
+        <div class="user-avatar">
+          ${user.prenom ? user.prenom[0].toUpperCase() : 'U'}
+        </div>
+        <div class="user-info">
+          <div class="user-name">${user.prenom || 'Utilisateur'} ${user.nom || ''}</div>
+          <div class="user-preview">${user.role || ''}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function startConversation(userId) {
+    try {
+      const response = await fetch(`/messagerie/demarrer/${userId}`, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Accept': 'application/json',
+        }
+      });
+      const data = await response.json();
+      if (data.success || response.ok) {
+        window.location.href = `/messagerie/${data.conversation_id || userId}`;
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  }
+
+  async function loadUsersForModal() {
+    try {
+      const response = await fetch('{{ route('messagerie.api.utilisateurs') }}', {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        modalUsers = data.users;
+        displayModalUsers(modalUsers);
+      }
+    } catch (error) {
+      console.error('Erreur chargement utilisateurs:', error);
+    }
+  }
+
+  function displayModalUsers(users) {
+    const container = document.getElementById('modal-users-list');
+    if (!users || users.length === 0) {
+      container.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--gris);">Aucun utilisateur disponible</div>';
+      return;
+    }
+
+    container.innerHTML = users.map(user => `
+      <div class="user-list-item" onclick="startConversation(${user.id}); closeNewChatModal();">
+        <div class="user-avatar">
+          ${user.prenom ? user.prenom[0].toUpperCase() : 'U'}
+        </div>
+        <div class="user-info">
+          <div class="user-name">${user.prenom || 'Utilisateur'} ${user.nom || ''}</div>
+          <div class="user-preview" style="font-size:0.8rem; color:var(--gris);">${user.role || ''}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterModalUsers(searchTerm) {
+    const filtered = modalUsers.filter(user => {
+      const fullName = `${user.prenom || ''} ${user.nom || ''}`.toLowerCase();
+      return fullName.includes(searchTerm.toLowerCase());
+    });
+    displayModalUsers(filtered);
+  }
+
+  // Charger les utilisateurs au démarrage
+  document.addEventListener('DOMContentLoaded', function() {
+    loadUsers();
+  });
+
+  const conversationId = {{ isset($conversation) && $conversation ? $conversation->id : 'null' }};
 
   // Auto-scroll vers le bas
   if (document.getElementById('chat-messages')) {
@@ -499,6 +698,148 @@
       }
     }, 5000);
   }
+
+  // Charger les utilisateurs au démarrage
+  let allUsers = [];
+
+  // Ajouter l'écouteur d'événement pour le bouton nouvelle conversation
+  document.getElementById('new-chat-btn')?.addEventListener('click', openNewChatModal);
+
+async function loadUsers() {
+    try {
+      const response = await fetch('{{ route('messagerie.api.utilisateurs') }}', {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        allUsers = data.users;
+        displayUsers(allUsers);
+      }
+    } catch (error) {
+      console.error('Erreur chargement utilisateurs:', error);
+    }
+  }
+
+  function displayUsers(users) {
+    const container = document.getElementById('users-list');
+    if (!users || users.length === 0) {
+      container.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--gris);">Aucun utilisateur</div>';
+      return;
+    }
+
+    container.innerHTML = users.map(user => `
+      <div class="user-item" onclick="startConversation(${user.id})">
+        <div class="user-avatar">
+          ${user.prenom ? user.prenom[0].toUpperCase() : 'U'}
+        </div>
+        <div class="user-info">
+          <div class="user-name">${user.prenom || 'Utilisateur'} ${user.nom || ''}</div>
+          <div class="user-preview">${user.role || ''}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function startConversation(userId) {
+    try {
+      const response = await fetch(`/messagerie/demarrer/${userId}`, {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Accept': 'application/json',
+        }
+      });
+      const data = await response.json();
+      if (data.success || response.ok) {
+        window.location.href = `/messagerie/${data.conversation_id || userId}`;
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+    }
+  }
+
+  function openNewChatModal() {
+    const modal = document.getElementById('new-chat-modal');
+    if (modal) {
+      modal.classList.add('active');
+      loadUsersForModal();
+    }
+  }
+
+  function closeNewChatModal() {
+    const modal = document.getElementById('new-chat-modal');
+    if (modal) {
+      modal.classList.remove('active');
+    }
+  }
+
+  let modalUsers = [];
+
+  async function loadUsersForModal() {
+    try {
+      const response = await fetch('{{ route('messagerie.api.utilisateurs') }}', {
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      const data = await response.json();
+      if (data.success) {
+        modalUsers = data.users;
+        displayModalUsers(modalUsers);
+      }
+    } catch (error) {
+      console.error('Erreur chargement utilisateurs:', error);
+    }
+  }
+
+  function displayModalUsers(users) {
+    const container = document.getElementById('modal-users-list');
+    if (!users || users.length === 0) {
+      container.innerHTML = '<div style="padding:1rem; text-align:center; color:var(--gris);">Aucun utilisateur disponible</div>';
+      return;
+    }
+
+    container.innerHTML = users.map(user => `
+      <div class="user-list-item" onclick="startConversation(${user.id}); closeNewChatModal();">
+        <div class="user-avatar">
+          ${user.prenom ? user.prenom[0].toUpperCase() : 'U'}
+        </div>
+        <div class="user-info">
+          <div class="user-name">${user.prenom || 'Utilisateur'} ${user.nom || ''}</div>
+          <div class="user-preview" style="font-size:0.8rem; color:var(--gris);">${user.role || ''}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterModalUsers(searchTerm) {
+    const filtered = modalUsers.filter(user => {
+      const fullName = `${user.prenom || ''} ${user.nom || ''}`.toLowerCase();
+      return fullName.includes(searchTerm.toLowerCase());
+    });
+    displayModalUsers(filtered);
+  }
+
+  // Charger les utilisateurs au démarrage
+  loadUsers();
 </script>
+
+<!-- Modal pour nouvelle conversation -->
+<div class="new-chat-modal" id="new-chat-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Nouvelle conversation</h3>
+      <button class="modal-close" onclick="closeNewChatModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="text" class="user-search" placeholder="Rechercher un utilisateur..." oninput="filterModalUsers(this.value)">
+      <div id="modal-users-list">
+        <!-- Liste des utilisateurs -->
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

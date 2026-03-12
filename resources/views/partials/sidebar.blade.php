@@ -3,6 +3,17 @@
 @elseif(Auth::user()->role === 'moderateur')
     @include('partials.sidebar-moderateur')
 @else
+@php
+function isActive($routePatterns) {
+    $patterns = is_array($routePatterns) ? $routePatterns : [$routePatterns];
+    foreach ($patterns as $pattern) {
+        if (request()->routeIs($pattern)) {
+            return true;
+        }
+    }
+    return false;
+}
+@endphp
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-logo">
     <div class="logo-mark">
@@ -31,7 +42,7 @@
   <nav class="sidebar-nav">
     <div class="nav-section-label">Principal</div>
 
-    <a class="nav-item actif" href="{{ route('dashboard') }}">
+    <a class="nav-item {{ isActive('dashboard') ? 'actif' : '' }}" href="{{ route('dashboard') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
         <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
@@ -39,7 +50,7 @@
       Tableau de bord
     </a>
 
-    <a class="nav-item" href="{{ route('profil') }}">
+    <a class="nav-item {{ isActive('profil') ? 'actif' : '' }}" href="{{ route('profil') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
         <circle cx="12" cy="7" r="4"/>
@@ -47,7 +58,7 @@
       Mon profil
     </a>
 
-    <a class="nav-item" href="{{ route('notifications.index') }}">
+    <a class="nav-item {{ isActive('notifications.index') ? 'actif' : '' }}" href="{{ route('notifications.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
@@ -57,7 +68,7 @@
 
     <div class="nav-section-label" style="margin-top:0.5rem">Modules</div>
 
-    <a class="nav-item" href="{{ route('informations.index') }}">
+    <a class="nav-item {{ isActive('informations.index') ? 'actif' : '' }}" href="{{ route('informations.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
         <line x1="12" y1="8" x2="12" y2="12"/>
@@ -77,15 +88,15 @@
       </svg>
     </div>
     <div class="submenu">
-      <a class="nav-item submenu-item" href="{{ route('formation.index') }}">
+      <a class="nav-item submenu-item {{ isActive('formation.index') ? 'actif' : '' }}" href="{{ route('formation.index') }}">
         Toutes les formations
       </a>
-      <a class="nav-item submenu-item" href="{{ route('formation.mes-formations') }}">
+      <a class="nav-item submenu-item {{ isActive('formation.mes-formations') ? 'actif' : '' }}" href="{{ route('formation.mes-formations') }}">
         Mes formations
       </a>
     </div>
 
-    <a class="nav-item" href="{{ route('entrepreneuriat.index') }}">
+    <a class="nav-item {{ isActive(['entrepreneuriat.index', 'entrepreneuriat.projets.*', 'entrepreneuriat.annonces.*']) ? 'actif' : '' }}" href="{{ route('entrepreneuriat.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="1" x2="12" y2="23"/>
         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
@@ -93,7 +104,7 @@
       Entrepreneuriat
     </a>
 
-    <a class="nav-item" href="{{ route('communaute.index') }}">
+    <a class="nav-item {{ isActive('communaute.index') ? 'actif' : '' }}" href="{{ route('communaute.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
         <circle cx="9" cy="7" r="4"/>
@@ -103,7 +114,7 @@
       Communauté
     </a>
 
-    <a class="nav-item" href="{{ route('messagerie.index') }}">
+    <a class="nav-item {{ isActive('messagerie.index') ? 'actif' : '' }}" href="{{ route('messagerie.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
       </svg>
@@ -112,27 +123,27 @@
 
     @if(Auth::user()->estModerateur())
     <div class="nav-section-label" style="margin-top:0.5rem">Administration</div>
-    <a class="nav-item" href="{{ route('admin.dashboard') }}">
+    <a class="nav-item {{ isActive('admin.dashboard') ? 'actif' : '' }}" href="{{ route('admin.dashboard') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
       Tableau de bord Admin
     </a>
-    <a class="nav-item" href="{{ route('admin.utilisateurs.index') }}">
+    <a class="nav-item {{ isActive('admin.utilisateurs.*') ? 'actif' : '' }}" href="{{ route('admin.utilisateurs.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
         <circle cx="9" cy="7" r="4"/>
       </svg>
       Utilisateurs
     </a>
-    <a class="nav-item" href="{{ route('admin.formations.index') }}">
+    <a class="nav-item {{ isActive('admin.formations.*') ? 'actif' : '' }}" href="{{ route('admin.formations.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
         <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
       </svg>
       Formations
     </a>
-    <a class="nav-item" href="{{ route('admin.informations.index') }}">
+    <a class="nav-item {{ isActive('admin.informations.*') ? 'actif' : '' }}" href="{{ route('admin.informations.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
         <line x1="12" y1="8" x2="12" y2="12"/>

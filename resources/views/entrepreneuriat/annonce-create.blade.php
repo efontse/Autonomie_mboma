@@ -67,7 +67,8 @@
     .type-option input:checked + label {
       border-color:var(--or); background:rgba(201,146,58,0.1);
     }
-    .type-option .icon { font-size:2rem; margin-bottom:0.5rem; display:block; }
+    .type-option .icon { width: 40px; height: 40px; margin-bottom: 0.5rem; display: block; }
+    .type-option .icon svg { width: 100%; height: 100%; }
     .type-option .title { font-weight:600; display:block; }
     .type-option .desc { font-size:0.8rem; color:var(--texte-doux); margin-top:0.3rem; }
 
@@ -283,7 +284,7 @@
             <div class="type-option">
               <input type="radio" id="type_produit" name="type" value="produit" {{ old('type') == 'produit' ? 'checked' : '' }}>
               <label for="type_produit">
-                <span class="icon">📦</span>
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></span>
                 <span class="title">Produit</span>
                 <span class="desc">Vendre un produit physique</span>
               </label>
@@ -291,7 +292,7 @@
             <div class="type-option">
               <input type="radio" id="type_service" name="type" value="service" {{ old('type') == 'service' ? 'checked' : '' }}>
               <label for="type_service">
-                <span class="icon">🔧</span>
+                <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
                 <span class="title">Service</span>
                 <span class="desc">Proposer un service</span>
               </label>

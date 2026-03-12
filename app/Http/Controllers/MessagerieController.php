@@ -54,7 +54,22 @@ class MessagerieController extends Controller
 
         $conversation->autre = $conversation->getOtherParticipant($userId);
 
-        return view('messagerie.show', compact('conversation'));
+        // Récupérer toutes les conversations pour la liste
+        $conversations = Conversation::whereHas('participants', function($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })
+        ->with(['participants', 'dernierMessage', 'messages' => function($q) use ($userId) {
+            $q->where('user_id', '!=', $userId)->where('est_lu', false);
+        }])
+        ->get()
+        ->map(function($conv) use ($userId) {
+            $conv->autre = $conv->getOtherParticipant($userId);
+            $conv->non_lus = $conv->getUnreadCount($userId);
+            return $conv;
+        })
+        ->sortByDesc('dernierMessage.created_at');
+
+        return view('messagerie.index', compact('conversation', 'conversations'));
     }
 
     public function getConversations(Request $request)
@@ -203,6 +218,30 @@ class MessagerieController extends Controller
             $conversation->participants()->attach([$currentUserId, $userId]);
         }
 
+        // Vérifier si c'est une requête AJAX
+        if (request()->expectsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'conversation_id' => $conversation->id,
+            ]);
+        }
+
         return redirect()->route('messagerie.show', $conversation->id);
+    }
+
+    /**
+     * Récupérer la liste des utilisateurs pour démarrer une conversation
+     */
+    public function getUsers()
+    {
+        $users = User::where('id', '!=', Auth::id())
+            ->select('id', 'prenom', 'nom', 'email', 'photo', 'role')
+            ->orderBy('prenom')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'users' => $users,
+        ]);
     }
 }

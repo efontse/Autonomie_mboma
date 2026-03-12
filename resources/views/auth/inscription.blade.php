@@ -228,9 +228,12 @@
       position: absolute;
       left: 12px; top: 50%;
       transform: translateY(-50%);
-      font-size: 1rem;
+      width: 18px; height: 18px;
       pointer-events: none;
       color: var(--gris);
+    }
+    .input-wrap .ico svg {
+      width: 100%; height: 100%;
     }
     input[type="text"],
     input[type="email"],
@@ -349,7 +352,8 @@
     }
     .role-carte:hover { border-color: var(--vert-clair); background: #f0f9f4; }
     .role-carte.selectionne { border-color: var(--vert); background: #e8f5ef; }
-    .role-emoji { font-size: 1.5rem; flex-shrink: 0; }
+    .role-emoji { width: 32px; height: 32px; flex-shrink: 0; }
+    .role-emoji svg { width: 100%; height: 100%; }
     .role-info { min-width: 0; }
     .role-titre { font-size: 0.82rem; font-weight: 700; color: var(--brun-fonce); }
     .role-desc  { font-size: 0.72rem; color: var(--gris); margin-top: 2px; }
@@ -447,7 +451,7 @@
           <div class="champ">
             <label for="prenom">Prénom <span class="requis">*</span></label>
             <div class="input-wrap">
-              <span class="ico">👤</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
               <input type="text" id="prenom" name="prenom" placeholder="Votre prénom" autocomplete="given-name"/>
             </div>
             <span class="msg-erreur" id="err-prenom">Prénom requis.</span>
@@ -456,7 +460,7 @@
           <div class="champ">
             <label for="nom">Nom <span class="requis">*</span></label>
             <div class="input-wrap">
-              <span class="ico">👤</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
               <input type="text" id="nom" name="nom" placeholder="Votre nom" autocomplete="family-name"/>
             </div>
             <span class="msg-erreur" id="err-nom">Nom requis.</span>
@@ -465,7 +469,7 @@
           <div class="champ">
             <label for="date_naissance">Date de naissance</label>
             <div class="input-wrap">
-              <span class="ico">📅</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
               <input type="date" id="date_naissance" name="date_naissance"/>
             </div>
           </div>
@@ -473,7 +477,7 @@
           <div class="champ">
             <label for="telephone">Téléphone</label>
             <div class="input-wrap">
-              <span class="ico">📞</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
               <input type="tel" id="telephone" name="telephone" placeholder="+237 6XX XXX XXX"/>
             </div>
           </div>
@@ -482,28 +486,28 @@
             <label>Votre profil <span class="requis">*</span></label>
             <div class="roles-grille">
               <div class="role-carte selectionne" data-role="femme" onclick="selectionnerRole(this)">
-                <span class="role-emoji">👩</span>
+                <span class="role-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
                 <div class="role-info">
                   <div class="role-titre">Femme adulte</div>
                   <div class="role-desc">Accès à toutes les ressources</div>
                 </div>
               </div>
               <div class="role-carte" data-role="jeune_fille" onclick="selectionnerRole(this)">
-                <span class="role-emoji">👧</span>
+                <span class="role-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></span>
                 <div class="role-info">
                   <div class="role-titre">Jeune fille</div>
                   <div class="role-desc">Contenu adapté 13-25 ans</div>
                 </div>
               </div>
               <div class="role-carte" data-role="entrepreneur" onclick="selectionnerRole(this)">
-                <span class="role-emoji">💼</span>
+                <span class="role-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
                 <div class="role-info">
                   <div class="role-titre">Entrepreneuse</div>
                   <div class="role-desc">Module entrepreneurial avancé</div>
                 </div>
               </div>
               <div class="role-carte" data-role="autre" onclick="selectionnerRole(this)">
-                <span class="role-emoji">🤝</span>
+                <span class="role-emoji"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
                 <div class="role-info">
                   <div class="role-titre">Partenaire</div>
                   <div class="role-desc">ONG, association, institution</div>
@@ -528,7 +532,7 @@
           <div class="champ">
             <label for="email">Adresse e-mail <span class="requis">*</span></label>
             <div class="input-wrap">
-              <span class="ico">✉️</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
               <input type="email" id="email" name="email" placeholder="vous@exemple.cm" autocomplete="email"/>
             </div>
             <span class="msg-erreur" id="err-email">E-mail invalide.</span>
@@ -537,7 +541,7 @@
           <div class="champ">
             <label for="mot_de_passe">Mot de passe <span class="requis">*</span></label>
             <div class="input-wrap">
-              <span class="ico">🔒</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
               <input type="password" id="mot_de_passe" name="mot_de_passe"
                      placeholder="8 caractères minimum"
                      oninput="evaluerForce(this.value)"/>
@@ -587,7 +591,7 @@
           <div class="champ">
             <label for="quartier">Quartier / Rue</label>
             <div class="input-wrap">
-              <span class="ico">🏘️</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
               <input type="text" id="quartier" name="quartier" placeholder="Votre quartier"/>
             </div>
           </div>
@@ -595,7 +599,7 @@
           <div class="champ">
             <label for="village">Village</label>
             <div class="input-wrap">
-              <span class="ico">🌿</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
               <input type="text" id="village" name="village" placeholder="Votre village"/>
             </div>
           </div>
@@ -603,7 +607,7 @@
           <div class="champ span2">
             <label for="niveau_education">Niveau d'éducation</label>
             <div class="input-wrap">
-              <span class="ico">🎓</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></span>
               <select id="niveau_education" name="niveau_education">
                 <option value="">— Sélectionner —</option>
                 <option value="aucun">Aucun</option>
@@ -618,7 +622,7 @@
           <div class="champ span2">
             <label for="activite_principale">Activité principale</label>
             <div class="input-wrap">
-              <span class="ico">🌾</span>
+              <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>
               <input type="text" id="activite_principale" name="activite_principale"
                      placeholder="Agriculture, couture, commerce…"/>
             </div>

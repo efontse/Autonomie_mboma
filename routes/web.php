@@ -9,6 +9,7 @@ use App\Http\Controllers\EntrepreneuriatController;
 use App\Http\Controllers\CommunauteController;
 use App\Http\Controllers\MessagerieController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,9 @@ Route::prefix('auth')->name('auth.')->group(function () {
 
 // ── Routes protégées (utilisatrice connectée) ─────────────
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Route de recherche
+    Route::post('/search', [SearchController::class, 'search'])->name('search');
+
     // Tableau de bord - accessible uniquement aux utilisateurs (pas aux modérateurs)
     Route::get('/tableau-de-bord', [DashboardController::class, 'index'])->name('dashboard')->middleware('role:utilisateur');
 
@@ -125,6 +129,7 @@ Route::middleware('auth')->prefix('messagerie')->name('messagerie.')->group(func
     Route::post('/demarrer/{userId}', [MessagerieController::class, 'startConversation'])->name('start');
     Route::get('/api/unread', [MessagerieController::class, 'getUnreadCount'])->name('unread');
     Route::get('/api/conversations', [MessagerieController::class, 'getConversations'])->name('api.conversations');
+    Route::get('/api/utilisateurs', [MessagerieController::class, 'getUsers'])->name('api.utilisateurs');
 });
 
 // ── Routes notifications ──────────────────────────────────────

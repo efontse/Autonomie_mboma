@@ -163,6 +163,90 @@
     }
     .topbar-gauche { display: flex; align-items: center; gap: 1rem; }
     .btn-menu-mobile { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; }
+
+    /* Barre de recherche */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--blanc);
+      border: 1px solid var(--gris-clair);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      width: 280px;
+      transition: all 0.2s;
+    }
+    .search-bar:focus-within {
+      border-color: var(--or);
+      box-shadow: 0 0 0 3px rgba(200, 134, 10, 0.1);
+    }
+    .search-bar svg {
+      width: 18px;
+      height: 18px;
+      color: var(--gris);
+      flex-shrink: 0;
+    }
+    .search-bar input {
+      border: none;
+      outline: none;
+      background: transparent;
+      flex: 1;
+      font-size: 0.85rem;
+      color: var(--texte);
+      margin-left: 0.5rem;
+    }
+    .search-bar input::placeholder {
+      color: var(--gris);
+    }
+    .search-container {
+      position: relative;
+    }
+    .search-results {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--blanc);
+      border: 1px solid var(--gris-clair);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-height: 400px;
+      overflow-y: auto;
+      z-index: 1000;
+      margin-top: 0.5rem;
+    }
+    .search-results.active { display: block; }
+    .search-result-section {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--gris-clair);
+    }
+    .search-result-section:last-child { border-bottom: none; }
+    .search-result-section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--gris);
+      margin-bottom: 0.5rem;
+    }
+    .search-result-item {
+      display: block;
+      padding: 0.5rem;
+      border-radius: 6px;
+      color: var(--texte);
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .search-result-item:hover { background: var(--ivoire); }
+    .search-no-results {
+      padding: 1.5rem;
+      text-align: center;
+      color: var(--gris);
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) { .search-bar { width: 200px; } }
+    @media (max-width: 600px) { .search-bar { display: none; } }
+
     .breadcrumb { font-size: 0.85rem; color: var(--gris); }
     .breadcrumb strong { color: var(--texte); font-weight: 600; }
     .topbar-droite { display: flex; align-items: center; gap: 1rem; }
@@ -535,7 +619,17 @@
             <line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
         </button>
-        <div class="breadcrumb">
+        <div class="search-container">
+          <div class="search-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <input type="text" id="globalSearch" placeholder="Rechercher..." autocomplete="off">
+          </div>
+          <div class="search-results" id="searchResults"></div>
+        </div>
+        <div class="breadcrumb" style="display: none;">
           Plateforme Mboma &nbsp;/&nbsp; <strong>Tableau de bord</strong>
         </div>
       </div>
@@ -735,6 +829,104 @@
 </div>
 
 <script>
+  // Recherche globale
+  const searchInput = document.getElementById('globalSearch');
+  const searchResults = document.getElementById('searchResults');
+  let searchTimeout;
+
+  if (searchInput) {
+    searchInput.addEventListener('input', function(e) {
+      clearTimeout(searchTimeout);
+      const query = e.target.value.trim();
+
+      if (query.length < 2) {
+        searchResults.classList.remove('active');
+        searchResults.innerHTML = '';
+        return;
+      }
+
+      searchTimeout = setTimeout(() => performSearch(query), 300);
+    });
+
+    // Fermer les résultats quand on clique ailleurs
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.search-container')) {
+        searchResults.classList.remove('active');
+      }
+    });
+
+    // Focus sur la recherche affiche les résultats s'il y a du texte
+    searchInput.addEventListener('focus', function() {
+      if (searchInput.value.trim().length >= 2) {
+        searchResults.classList.add('active');
+      }
+    });
+  }
+
+  function performSearch(query) {
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+
+    fetch('{{ route("search") }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': token
+      },
+      body: JSON.stringify({ q: query })
+    })
+    .then(response => response.json())
+    .then(data => {
+      displayResults(data);
+    })
+    .catch(error => {
+      console.error('Erreur de recherche:', error);
+    });
+  }
+
+  function displayResults(data) {
+    if (!data.formations?.length && !data.informations?.length && !data.projets?.length && !data.publications?.length) {
+      searchResults.innerHTML = '<div class="search-no-results">Aucun résultat trouvé</div>';
+    } else {
+      let html = '';
+
+      if (data.formations?.length) {
+        html += '<div class="search-result-section"><div class="search-result-section-title">Formations</div>';
+        data.formations.slice(0, 3).forEach(item => {
+          html += `<a class="search-result-item" href="{{ url('/formations') }}/${item.id}">📚 ${item.titre}</a>`;
+        });
+        html += '</div>';
+      }
+
+      if (data.informations?.length) {
+        html += '<div class="search-result-section"><div class="search-result-section-title">Informations</div>';
+        data.informations.slice(0, 3).forEach(item => {
+          html += `<a class="search-result-item" href="{{ url('/informations') }}/${item.id}">📰 ${item.titre}</a>`;
+        });
+        html += '</div>';
+      }
+
+      if (data.projets?.length) {
+        html += '<div class="search-result-section"><div class="search-result-section-title">Projets</div>';
+        data.projets.slice(0, 3).forEach(item => {
+          html += `<a class="search-result-item" href="{{ url('/entrepreneuriat/projets') }}/${item.id}">💼 ${item.titre}</a>`;
+        });
+        html += '</div>';
+      }
+
+      if (data.publications?.length) {
+        html += '<div class="search-result-section"><div class="search-result-section-title">Publications</div>';
+        data.publications.slice(0, 3).forEach(item => {
+          html += `<a class="search-result-item" href="{{ route('communaute.index') }}">💬 ${item.contenu.substring(0, 50)}...</a>`;
+        });
+        html += '</div>';
+      }
+
+      searchResults.innerHTML = html;
+    }
+
+    searchResults.classList.add('active');
+  }
+
   function ouvrirSidebar() {
     document.getElementById('sidebar').classList.add('ouvert');
     document.getElementById('overlay').classList.add('visible');
