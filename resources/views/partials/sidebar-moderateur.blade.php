@@ -18,7 +18,7 @@ function isActive($routePatterns) {
       </svg>
     </div>
     <div class="logo-text">
-      <div class="logo-name">Plateforme Mboma</div>
+      <div class="logo-name">Mboma Connect</div>
       <div class="logo-sub">Modération</div>
     </div>
   </div>
