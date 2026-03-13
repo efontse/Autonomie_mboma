@@ -260,8 +260,7 @@
       @endif
 
       <div class="article-body">
-        <?php $categorieCouleur = $information->categorieCouleur(); ?>
-        <span class="article-category" style="background-color: <?php echo $categorieCouleur; ?>">
+        <span class="article-category" style="background-color: {{ $information->categorieCouleur() }}">
           {{ $information->categorieLabel() }}
         </span>
 

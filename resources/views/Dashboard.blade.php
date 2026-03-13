@@ -674,7 +674,7 @@
             @php $pct = Auth::user()->profil?->pourcentageCompletude() ?? 0; @endphp
             <div class="profil-pct-nb">{{ $pct }}%</div>
             <div class="profil-pct-bar">
-              <div class="profil-pct-fill" style="width: {{$pct}}%;"></div>
+              <div class="profil-pct-fill" style="width: {{ json_encode($pct) }}%;"></div>
             </div>
           </div>
         </div>
