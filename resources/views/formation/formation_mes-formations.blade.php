@@ -358,8 +358,7 @@
         </div>
 
         <div class="row-body">
-          @php $styleCouleur = 'color:' . $f->categorie->couleur; @endphp
-          <div class="row-cat" style="<?php echo $styleCouleur; ?>">{{ $f->categorie->nom }}</div>
+          <div class="row-cat" style="color: {{ $f->categorie->couleur }}">{{ $f->categorie->nom }}</div>
           <div class="row-titre">{{ $f->titre }}</div>
           <div class="row-meta">
             <span class="row-meta-it">
@@ -403,8 +402,7 @@
               <strong>{{ $ins->progression }}%</strong>
             </div>
             <div class="row-prog-bar">
-              @php $styleLargeur = 'width:' . $ins->progression . '%'; @endphp
-              <div class="row-prog-fill" style="<?php echo $styleLargeur; ?>"></div>
+              <div class="row-prog-fill" style="width: {{ $ins->progression }}%"></div>
             </div>
             <span style="font-size:0.72rem;color:var(--gris)">
               {{ $ins->progression === 0 ? 'Pas encore commencé' : 'En cours' }}
