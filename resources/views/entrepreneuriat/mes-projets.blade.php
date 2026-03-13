@@ -317,7 +317,6 @@
             <th>Budget</th>
             <th>Statut</th>
             <th>Date</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -362,14 +361,7 @@
                 </span>
               </td>
               <td>{{ $projet->created_at->format('d/m/Y') }}</td>
-              <td>
-                <div class="actions-cell">
-                  <a href="{{ route('entrepreneuriat.projet.show', $projet) }}" class="btn btn-sm btn-secondary">
-                    Voir
-                  </a>
-                </div>
-              </td>
-            </tr>
+              </tr>
           @endforeach
         </tbody>
       </table>
@@ -384,6 +376,8 @@
 
 <script>
   function toggleSubmenu(element) {
+    event.preventDefault();
+    event.stopPropagation();
     element.classList.toggle('open');
     const submenu = element.nextElementSibling;
     submenu.classList.toggle('open');

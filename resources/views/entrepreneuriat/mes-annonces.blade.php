@@ -346,6 +346,8 @@
 
 <script>
   function toggleSubmenu(element) {
+    event.preventDefault();
+    event.stopPropagation();
     element.classList.toggle('open');
     const submenu = element.nextElementSibling;
     submenu.classList.toggle('open');
