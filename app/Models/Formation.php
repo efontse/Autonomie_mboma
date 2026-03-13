@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Formation extends Model
 {
@@ -44,6 +45,11 @@ class Formation extends Model
     public function inscriptions(): HasMany
     {
         return $this->hasMany(InscriptionFormation::class);
+    }
+
+    public function quiz(): HasOne
+    {
+        return $this->hasOne(QuizFormation::class);
     }
 
     /**

@@ -381,6 +381,16 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
                 Déjà inscrit
               </button>
+              @if($formation->quiz)
+                <a href="{{ route('formation.quiz', $formation) }}" class="btn btn-primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  @if(isset($quizResultat) && $quizResultat['aReussi'])
+                    Quiz réussi ({{ $quizResultat['meilleureTentative']->score }}%)
+                  @else
+                    Passer le quiz
+                  @endif
+                </a>
+              @endif
             @else
               <form method="POST" action="{{ route('formation.inscrire', $formation->id) }}">
                 @csrf
@@ -401,7 +411,7 @@
     </div>
 
     @if($formation->image_url)
-    <img src="{{ $formation->image_url }}" alt="{{ $formation->titre }}" class="image-cover"/>
+    <img src="{{ asset($formation->image_url) }}" alt="{{ $formation->titre }}" class="image-cover"/>
     @endif
 
     <div class="content-grid">

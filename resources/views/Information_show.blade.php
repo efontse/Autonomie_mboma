@@ -289,7 +289,7 @@ use App\Models\Information;
 
     <article class="article">
       @if($information->image_url)
-        <img src="{{ $information->image_url }}" alt="{{ $information->titre }}" class="article-image">
+        <img src="{{ asset($information->image_url) }}" alt="{{ $information->titre }}" class="article-image">
       @else
         <div class="article-image-placeholder">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">

@@ -96,13 +96,27 @@ function isActive($routePatterns) {
       </a>
     </div>
 
-    <a class="nav-item {{ isActive(['entrepreneuriat.index', 'entrepreneuriat.projets.*', 'entrepreneuriat.annonces.*']) ? 'actif' : '' }}" href="{{ route('entrepreneuriat.index') }}">
+    <div class="nav-item has-submenu" onclick="toggleSubmenu(this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="12" y1="1" x2="12" y2="23"/>
         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
       </svg>
       Entrepreneuriat
-    </a>
+      <svg class="submenu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+    <div class="submenu">
+      <a class="nav-item submenu-item {{ isActive('entrepreneuriat.index') ? 'actif' : '' }}" href="{{ route('entrepreneuriat.index') }}">
+        Vue d'ensemble
+      </a>
+      <a class="nav-item submenu-item {{ isActive('entrepreneuriat.mes-projets') ? 'actif' : '' }}" href="{{ route('entrepreneuriat.mes-projets') }}">
+        Mes projets
+      </a>
+      <a class="nav-item submenu-item {{ isActive('entrepreneuriat.mes-annonces') ? 'actif' : '' }}" href="{{ route('entrepreneuriat.mes-annonces') }}">
+        Mes annonces
+      </a>
+    </div>
 
     <a class="nav-item {{ isActive('communaute.index') ? 'actif' : '' }}" href="{{ route('communaute.index') }}">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

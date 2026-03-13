@@ -430,7 +430,7 @@
           <article class="formation-card">
             <div class="card-image">
               @if($formation->image_url)
-                <img src="{{ $formation->image_url }}" alt="{{ $formation->titre }}"/>
+                <img src="{{ asset($formation->image_url) }}" alt="{{ $formation->titre }}"/>
               @endif
               <span class="card-badge badge-{{ $formation->type }}">
                 {{ $formation->type }}

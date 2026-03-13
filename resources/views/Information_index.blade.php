@@ -311,7 +311,7 @@ use App\Models\User;
       @forelse($informations ?? [] as $information)
         <article class="article-card">
           @if($information->image_url)
-            <img src="{{ $information->image_url }}" alt="{{ $information->titre }}" class="article-image">
+            <img src="{{ asset($information->image_url) }}" alt="{{ $information->titre }}" class="article-image">
           @else
             <div class="article-image" style="display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem;">
               📰

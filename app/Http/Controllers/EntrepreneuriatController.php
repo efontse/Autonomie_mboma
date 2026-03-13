@@ -74,13 +74,24 @@ class EntrepreneuriatController extends Controller
     /**
      * Liste des projets de l'utilisateur connecté
      */
-    public function mesProjets()
+    public function mesProjets(Request $request)
     {
-        $projets = Auth::user()->projetsEntrepreneuriaux()
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $filtre = $request->get('filtre');
 
-        return view('entrepreneuriat.mes-projets', compact('projets'));
+        $query = Auth::user()->projetsEntrepreneuriaux();
+
+        // Appliquer le filtre
+        if ($filtre === 'en_attente') {
+            $query->where('statut', 'en_attente');
+        } elseif ($filtre === 'approuves') {
+            $query->where('statut', 'valide');
+        } elseif ($filtre === 'rejetes') {
+            $query->where('statut', 'rejete');
+        }
+
+        $projets = $query->orderBy('created_at', 'desc')->get();
+
+        return view('entrepreneuriat.mes-projets', compact('projets', 'filtre'));
     }
 
     /**

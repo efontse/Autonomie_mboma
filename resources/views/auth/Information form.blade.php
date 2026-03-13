@@ -229,7 +229,7 @@
         @if(isset($information) && $information->image_url)
           <div style="margin-top:0.7rem;font-size:0.78rem;color:var(--texte-doux)">
             Image actuelle :
-            <img src="{{ asset('storage/'.$information->image_url) }}"
+            <img src="{{ asset($information->image_url) }}"
                  style="max-width:120px;border-radius:6px;margin-left:0.5rem;vertical-align:middle"/>
           </div>
         @endif

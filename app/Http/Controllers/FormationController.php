@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Formation;
 use App\Models\InscriptionFormation;
 use App\Models\CategorieFormation;
+use App\Models\QuizFormation;
+use App\Models\QuizTentative;
+use App\Models\QuizReponseUtilisateur;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FormationController extends Controller
 {
@@ -26,14 +30,23 @@ class FormationController extends Controller
     /**
      * Liste des formations auxquelles l'utilisateur est inscrit
      */
-    public function mesFormations()
+    public function mesFormations(Request $request)
     {
-        $inscriptions = Auth::user()->inscriptionsFormations()
-            ->with(['formation.categorie', 'formation.auteur'])
-            ->orderBy('inscrit_le', 'desc')
-            ->get();
+        $filtre = $request->get('filtre');
 
-        return view('formation.formation_mes-formations', compact('inscriptions'));
+        $query = Auth::user()->inscriptionsFormations()
+            ->with(['formation.categorie', 'formation.auteur']);
+
+        // Appliquer le filtre
+        if ($filtre === 'en_cours') {
+            $query->where('termine', false)->where('progression', '>', 0);
+        } elseif ($filtre === 'terminees') {
+            $query->where('termine', true);
+        }
+
+        $inscriptions = $query->orderBy('inscrit_le', 'desc')->get();
+
+        return view('formation.formation_mes-formations', compact('inscriptions', 'filtre'));
     }
 
     /**
@@ -44,9 +57,26 @@ class FormationController extends Controller
         // Incrémenter le compteur de vues
         $formation->increment('vues');
 
-        $formation->load(['categorie', 'auteur', 'inscriptions.user']);
+        $formation->load(['categorie', 'auteur', 'inscriptions.user', 'quiz']);
 
-        return view('formation.formation_show', compact('formation'));
+        // Vérifier si l'utilisateur est inscrit et s'il a réussi le quiz
+        $inscription = null;
+        $quizResultat = null;
+
+        if (Auth::check()) {
+            $inscription = Auth::user()->inscriptionsFormations()
+                ->where('formation_id', $formation->id)
+                ->first();
+
+            if ($inscription && $formation->quiz) {
+                $quizResultat = [
+                    'aReussi' => $formation->quiz->aReussi(Auth::id()),
+                    'meilleureTentative' => $formation->quiz->meilleureTentative(Auth::id()),
+                ];
+            }
+        }
+
+        return view('formation.formation_show', compact('formation', 'inscription', 'quizResultat'));
     }
 
     /**
@@ -215,5 +245,137 @@ class FormationController extends Controller
 
         return redirect()->route('formation.admin.index')
             ->with('success', 'Formation supprimée avec succès !');
+    }
+
+    /**
+     * Afficher le quiz d'une formation
+     */
+    public function quiz(Formation $formation)
+    {
+        $user = Auth::user();
+
+        // Vérifier que l'utilisateur est inscrit à la formation
+        $inscription = $user->inscriptionsFormations()
+            ->where('formation_id', $formation->id)
+            ->first();
+
+        if (!$inscription) {
+            return redirect()->route('formation.mes-formations')
+                ->with('error', 'Vous devez être inscrit à cette formation pour accéder au quiz.');
+        }
+
+        // Charger le quiz avec ses questions et réponses
+        $quiz = $formation->quiz()->with(['questions.reponses'])->first();
+
+        if (!$quiz) {
+            return redirect()->route('formation.show', $formation)
+                ->with('error', 'Aucun quiz disponible pour cette formation.');
+        }
+
+        // Récupérer les tentatives précédentes
+        $tentatives = $quiz->tentatives()
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $meilleureTentative = $quiz->meilleureTentative($user->id);
+        $aReussi = $quiz->aReussi($user->id);
+
+        return view('formation.quiz', compact('formation', 'quiz', 'inscription', 'tentatives', 'meilleureTentative', 'aReussi'));
+    }
+
+    /**
+     * Soumettre les réponses du quiz
+     */
+    public function soumettreQuiz(Request $request, Formation $formation)
+    {
+        $user = Auth::user();
+
+        // Vérifier que l'utilisateur est inscrit à la formation
+        $inscription = $user->inscriptionsFormations()
+            ->where('formation_id', $formation->id)
+            ->first();
+
+        if (!$inscription) {
+            return response()->json(['success' => false, 'message' => 'Non autorisé.'], 403);
+        }
+
+        $quiz = $formation->quiz()->with(['questions.reponses'])->first();
+
+        if (!$quiz) {
+            return response()->json(['success' => false, 'message' => 'Quiz non trouvé.'], 404);
+        }
+
+        // Valider les réponses
+        $reponses = $request->input('reponses', []);
+
+        // Créer la tentative
+        $tentative = QuizTentative::create([
+            'user_id' => $user->id,
+            'quiz_id' => $quiz->id,
+            'score' => 0,
+            'reussie' => false,
+        ]);
+
+        // Calculer le score
+        $totalQuestions = $quiz->questions->count();
+        $bonnesReponses = 0;
+
+        foreach ($quiz->questions as $question) {
+            $reponseUtilisateur = $reponses[$question->id] ?? null;
+
+            if ($reponseUtilisateur) {
+                // Enregistrer la réponse
+                QuizReponseUtilisateur::create([
+                    'tentative_id' => $tentative->id,
+                    'question_id' => $question->id,
+                    'reponse_id' => $reponseUtilisateur,
+                ]);
+
+                // Vérifier si la réponse est correcte
+                $reponse = $question->reponses->find($reponseUtilisateur);
+                if ($reponse && $reponse->est_correcte) {
+                    $bonnesReponses++;
+                }
+            }
+        }
+
+        // Calculer le pourcentage
+        $score = $totalQuestions > 0 ? round(($bonnesReponses / $totalQuestions) * 100) : 0;
+        $reussie = $score >= $quiz->score_minimum;
+
+        // Mettre à jour la tentative
+        $tentative->update([
+            'score' => $score,
+            'reussie' => $reussie,
+            'termine_le' => now(),
+        ]);
+
+        // Si réussi, marquer la formation comme terminée
+        if ($reussie) {
+            $inscription->update([
+                'termine' => true,
+                'termine_le' => now(),
+                'progression' => 100,
+            ]);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'score' => $score,
+                'reussie' => $reussie,
+                'score_minimum' => $quiz->score_minimum,
+                'message' => $reussie
+                    ? 'Félicitations ! Vous avez réussi le quiz !'
+                    : 'Quiz terminé. Réessayez pour améliorer votre score.'
+            ]);
+        }
+
+        return redirect()->route('formation.quiz', $formation)
+            ->with($reussie ? 'success' : 'error',
+                $reussie
+                    ? 'Félicitations ! Vous avez réussi le quiz !'
+                    : 'Quiz terminé. Réessayez pour améliorer votre score.');
     }
 }

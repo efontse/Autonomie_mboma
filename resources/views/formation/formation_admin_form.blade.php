@@ -383,7 +383,7 @@
             </div>
             @if(isset($formation) && $formation->document_url)
               <div style="font-size:0.76rem;color:var(--texte-doux);margin-top:0.5rem">
-                ✅ Fichier actuel : <a href="{{ asset('storage/'.$formation->document_url) }}" target="_blank" style="color:var(--or)">Voir le PDF</a>
+                ✅ Fichier actuel : <a href="{{ asset($formation->document_url) }}" target="_blank" style="color:var(--or)">Voir le PDF</a>
               </div>
             @endif
             @error('document') <div class="msg-err">{{ $message }}</div> @enderror
@@ -456,7 +456,7 @@
             </div>
             @if(isset($formation) && $formation->image_url)
               <div style="margin-top:0.6rem">
-                <img src="{{ asset('storage/'.$formation->image_url) }}"
+                <img src="{{ asset($formation->image_url) }}"
                      style="max-width:100%;border-radius:7px;max-height:120px;object-fit:cover"/>
               </div>
             @endif

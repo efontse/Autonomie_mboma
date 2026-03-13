@@ -82,6 +82,10 @@ Route::middleware('auth')->prefix('formations')->name('formation.')->group(funct
     Route::post('/{formation}/inscrire', [FormationController::class, 'inscrire'])->name('inscrire')->middleware('role:utilisateur');
     // Mettre à jour la progression (AJAX) - accessible uniquement aux utilisateurs
     Route::post('/{formation}/progression', [FormationController::class, 'progression'])->name('progression')->middleware('role:utilisateur');
+    // Quiz - accessible uniquement aux utilisateurs
+    Route::get('/{formation}/quiz', [FormationController::class, 'quiz'])->name('quiz')->middleware('role:utilisateur');
+    // Soumettre le quiz - accessible uniquement aux utilisateurs
+    Route::post('/{formation}/quiz/soumettre', [FormationController::class, 'soumettreQuiz'])->name('quiz.soumettre')->middleware('role:utilisateur');
 });
 
 // ── Routes admin / modération ─────────────────────────────

@@ -287,7 +287,7 @@
           <article class="information-card" data-categorie="{{ $information->type }}">
             <div class="card-image">
               @if($information->image_url)
-                <img src="{{ $information->image_url }}" alt="{{ $information->titre }}"/>
+                <img src="{{ asset($information->image_url) }}" alt="{{ $information->titre }}"/>
               @endif
               <span class="card-badge badge-{{ $information->type }}">
                 {{ $information->type }}

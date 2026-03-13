@@ -263,6 +263,45 @@
       </a>
     </div>
 
+    {{-- Statistiques --}}
+    @php
+      $filtre = $filtre ?? null;
+      $total = $projets->count();
+      $enAttente = $projets->where('statut', 'en_attente')->count();
+      $approuves = $projets->where('statut', 'valide')->count();
+      $rejetes = $projets->where('statut', 'rejete')->count();
+
+      // Calculer les totaux pour les filtres (sans filtre)
+      $tousProjets = auth()->user()->projetsEntrepreneuriaux()->get();
+      $totalTous = $tousProjets->count();
+      $totalEnAttente = $tousProjets->where('statut', 'en_attente')->count();
+      $totalApprouves = $tousProjets->where('statut', 'valide')->count();
+      $totalRejetes = $tousProjets->where('statut', 'rejete')->count();
+    @endphp
+
+    <div class="onglets" style="display:flex; gap:0.4rem; margin-bottom:1.5rem;">
+      <a href="{{ route('entrepreneuriat.mes-projets') }}"
+         class="onglet {{ !$filtre ? 'actif' : '' }}"
+         style="padding:0.5rem 1.2rem; border-radius:8px; font-size:0.84rem; font-weight:500; border:1.5px solid var(--gris-clair); background:{{ !$filtre ? 'var(--brun)' : 'var(--blanc)' }}; color:{{ !$filtre ? 'var(--blanc)' : 'var(--texte-doux)' }}; text-decoration:none;">
+        Toutes <span style="display:inline-block; background:{{ !$filtre ? 'rgba(255,255,255,0.2)' : 'var(--gris-clair)' }}; color:{{ !$filtre ? 'var(--blanc)' : 'var(--gris)' }}; font-size:0.65rem; font-weight:700; padding:1px 6px; border-radius:10px; margin-left:0.3rem;">{{ $totalTous }}</span>
+      </a>
+      <a href="{{ route('entrepreneuriat.mes-projets', ['filtre' => 'en_attente']) }}"
+         class="onglet {{ $filtre === 'en_attente' ? 'actif' : '' }}"
+         style="padding:0.5rem 1.2rem; border-radius:8px; font-size:0.84rem; font-weight:500; border:1.5px solid var(--gris-clair); background:{{ $filtre === 'en_attente' ? 'var(--brun)' : 'var(--blanc)' }}; color:{{ $filtre === 'en_attente' ? 'var(--blanc)' : 'var(--texte-doux)' }}; text-decoration:none;">
+        En attente <span style="display:inline-block; background:{{ $filtre === 'en_attente' ? 'rgba(255,255,255,0.2)' : 'var(--gris-clair)' }}; color:{{ $filtre === 'en_attente' ? 'var(--blanc)' : 'var(--gris)' }}; font-size:0.65rem; font-weight:700; padding:1px 6px; border-radius:10px; margin-left:0.3rem;">{{ $totalEnAttente }}</span>
+      </a>
+      <a href="{{ route('entrepreneuriat.mes-projets', ['filtre' => 'approuves']) }}"
+         class="onglet {{ $filtre === 'approuves' ? 'actif' : '' }}"
+         style="padding:0.5rem 1.2rem; border-radius:8px; font-size:0.84rem; font-weight:500; border:1.5px solid var(--gris-clair); background:{{ $filtre === 'approuves' ? 'var(--vert)' : 'var(--blanc)' }}; color:{{ $filtre === 'approuves' ? 'var(--blanc)' : 'var(--texte-doux)' }}; text-decoration:none;">
+        Approuvés <span style="display:inline-block; background:{{ $filtre === 'approuves' ? 'rgba(255,255,255,0.2)' : 'var(--gris-clair)' }}; color:{{ $filtre === 'approuves' ? 'var(--blanc)' : 'var(--gris)' }}; font-size:0.65rem; font-weight:700; padding:1px 6px; border-radius:10px; margin-left:0.3rem;">{{ $totalApprouves }}</span>
+      </a>
+      <a href="{{ route('entrepreneuriat.mes-projets', ['filtre' => 'rejetes']) }}"
+         class="onglet {{ $filtre === 'rejetes' ? 'actif' : '' }}"
+         style="padding:0.5rem 1.2rem; border-radius:8px; font-size:0.84rem; font-weight:500; border:1.5px solid var(--gris-clair); background:{{ $filtre === 'rejetes' ? '#DC2626' : 'var(--blanc)' }}; color:{{ $filtre === 'rejetes' ? 'var(--blanc)' : 'var(--texte-doux)' }}; text-decoration:none;">
+        Rejetés <span style="display:inline-block; background:{{ $filtre === 'rejetes' ? 'rgba(255,255,255,0.2)' : 'var(--gris-clair)' }}; color:{{ $filtre === 'rejetes' ? 'var(--blanc)' : 'var(--gris)' }}; font-size:0.65rem; font-weight:700; padding:1px 6px; border-radius:10px; margin-left:0.3rem;">{{ $totalRejetes }}</span>
+      </a>
+    </div>
+
     @if(session('success'))
       <div style="padding:1rem; background:#D4EDDA; color:#155724; border-radius:8px; margin-bottom:1.5rem;">
         {{ session('success') }}

@@ -287,9 +287,15 @@
 
   {{-- Résumé --}}
   @php
-    $total    = $inscriptions->count();
-    $terminees = auth()->user()->formations()->where('termine', true)->count();
-    $enCours  = auth()->user()->formations()->where('termine', false)->where('progression', '>', 0)->count();
+    $total = $inscriptions->count();
+    $terminees = $inscriptions->where('termine', true)->count();
+    $enCours = $inscriptions->where('termine', false)->where('progression', '>', 0)->count();
+
+    // Calculer les totaux pour les onglets (sans filtre)
+    $toutesInscriptions = auth()->user()->inscriptionsFormations()->get();
+    $totalToutes = $toutesInscriptions->count();
+    $totalTerminees = $toutesInscriptions->where('termine', true)->count();
+    $totalEnCours = $toutesInscriptions->where('termine', false)->where('progression', '>', 0)->count();
   @endphp
   <div class="resume">
     <div class="resume-card">
@@ -324,16 +330,16 @@
   {{-- Onglets filtre --}}
   <div class="onglets">
     <a href="{{ route('formation.mes-formations') }}"
-       class="onglet {{ !request('filtre') ? 'actif' : '' }}">
-      Toutes <span class="onglet-nb">{{ $total }}</span>
+       class="onglet {{ !$filtre ? 'actif' : '' }}">
+      Toutes <span class="onglet-nb">{{ $totalToutes }}</span>
     </a>
     <a href="{{ route('formation.mes-formations', ['filtre' => 'en_cours']) }}"
-       class="onglet {{ request('filtre') === 'en_cours' ? 'actif' : '' }}">
-      En cours <span class="onglet-nb">{{ $enCours }}</span>
+       class="onglet {{ $filtre === 'en_cours' ? 'actif' : '' }}">
+      En cours <span class="onglet-nb">{{ $totalEnCours }}</span>
     </a>
     <a href="{{ route('formation.mes-formations', ['filtre' => 'terminees']) }}"
-       class="onglet {{ request('filtre') === 'terminees' ? 'actif' : '' }}">
-      Terminées <span class="onglet-nb">{{ $terminees }}</span>
+       class="onglet {{ $filtre === 'terminees' ? 'actif' : '' }}">
+      Terminées <span class="onglet-nb">{{ $totalTerminees }}</span>
     </a>
   </div>
 
@@ -345,7 +351,7 @@
 
         <div class="row-image">
           @if($f->image_url)
-            <img src="{{ asset('storage/'.$f->image_url) }}" alt="{{ $f->titre }}"/>
+            <img src="{{ asset($f->image_url) }}" alt="{{ $f->titre }}"/>
           @else
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
           @endif
