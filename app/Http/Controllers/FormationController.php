@@ -8,12 +8,14 @@ use App\Models\CategorieFormation;
 use App\Models\QuizFormation;
 use App\Models\QuizTentative;
 use App\Models\QuizReponseUtilisateur;
+use App\Traits\NotificationHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class FormationController extends Controller
 {
+    use NotificationHelper;
     /**
      * Liste des formations publiées
      */
@@ -106,6 +108,9 @@ class FormationController extends Controller
             'termine' => false,
             'inscrit_le' => now(),
         ]);
+
+        // Envoyer les notifications
+        $this->notifyInscriptionFormation($user->id, $formation->titre);
 
         if ($request->expectsJson()) {
             return response()->json(['success' => true, 'message' => 'Inscription réussie ! Vous pouvez maintenant suivre cette formation.']);
@@ -358,6 +363,9 @@ class FormationController extends Controller
                 'termine_le' => now(),
                 'progression' => 100,
             ]);
+
+            // Notification de formation terminée
+            $this->notifyFormationTerminee($user->id, $formation->titre);
         }
 
         if ($request->expectsJson()) {

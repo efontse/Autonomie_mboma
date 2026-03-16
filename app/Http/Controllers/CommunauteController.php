@@ -6,12 +6,14 @@ use App\Models\CommunityPost;
 use App\Models\CommunityReaction;
 use App\Models\CommunityComment;
 use App\Models\CommunityReport;
+use App\Traits\NotificationHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class CommunauteController extends Controller
 {
+    use NotificationHelper;
     public function index(Request $request)
     {
         $type = $request->get('type');
@@ -124,6 +126,13 @@ class CommunauteController extends Controller
 
         $post = CommunityPost::find($request->post_id);
         $post->increment('comments_count');
+
+        // Notification à l'auteur du post
+        $this->notifyNouveauCommentaire(
+            $post->user_id,
+            Auth::user()->prenom . ' ' . Auth::user()->nom,
+            substr($post->contenu, 0, 50) . (strlen($post->contenu) > 50 ? '...' : '')
+        );
 
         $comment->load('user');
 

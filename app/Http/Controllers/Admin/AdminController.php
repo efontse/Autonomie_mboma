@@ -10,11 +10,13 @@ use App\Models\Publication;
 use App\Models\ProjetEntrepreneurial;
 use App\Models\InscriptionFormation;
 use App\Models\CategorieFormation;
+use App\Traits\NotificationHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    use NotificationHelper;
     /**
      * Dashboard - redirige selon le rôle
      */
@@ -529,6 +531,9 @@ class AdminController extends Controller
         $projet->statut = 'approuve';
         $projet->save();
 
+        // Notification à l'utilisateur
+        $this->notifyProjetValide($projet->user_id, $projet->titre);
+
         return redirect()->back()
             ->with('success', 'Projet approuvé avec succès.');
     }
@@ -540,6 +545,9 @@ class AdminController extends Controller
     {
         $projet->statut = 'rejete';
         $projet->save();
+
+        // Notification à l'utilisateur
+        $this->notifyProjetRejete($projet->user_id, $projet->titre);
 
         return redirect()->back()
             ->with('success', 'Projet rejeté avec succès.');

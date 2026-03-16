@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\ProjetEntrepreneurial;
 use App\Models\Annonce;
+use App\Traits\NotificationHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class EntrepreneuriatController extends Controller
 {
+    use NotificationHelper;
     /**
      * Liste des secteurs d'activité
      */
@@ -66,6 +68,9 @@ class EntrepreneuriatController extends Controller
         $projet->statut = 'en_attente';
         $projet->date_soumission = now();
         $projet->save();
+
+        // Notification de soumission de projet
+        $this->notifyProjetSoumis($projet->titre);
 
         return redirect()->route('entrepreneuriat.mes-projets')
             ->with('success', 'Votre projet a été soumis avec succès !');
