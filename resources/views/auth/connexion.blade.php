@@ -253,7 +253,7 @@
 
 <div class="carte">
 
-  <!-- Panneau décoratif gauche -->
+  <!-- Panneau décoratif gauche de la page  -->
   <div class="deco">
     <div class="deco-motif"></div>
     <div class="deco-logo">
