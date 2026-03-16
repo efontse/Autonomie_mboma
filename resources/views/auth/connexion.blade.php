@@ -258,7 +258,7 @@
     <div class="deco-motif"></div>
     <div class="deco-logo">
       <div class="logo-cercle"><i class="bi bi-flower1"></i></div>
-      <h2>Plateforme<br>Mboma</h2>
+      <h2>Mboma <br>Connect</h2>
       <div class="deco-sous">Arrondissement de Mboma</div>
     </div>
     <ul class="deco-avantages">
