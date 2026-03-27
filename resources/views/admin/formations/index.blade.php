@@ -49,10 +49,18 @@
     .sidebar-footer { padding:1rem; border-top:1px solid var(--gris-clair); }
     .btn-deconnexion { width:100%; display:flex; align-items:center; justify-content:center; gap:0.5rem; padding:0.75rem; background:transparent; border:1px solid var(--gris-clair); border-radius:8px; color:var(--texte-doux); font-size:0.8rem; font-weight:500; cursor:pointer; transition:all 0.2s; text-decoration:none; }
     .btn-deconnexion:hover { background:#FEE2E2; border-color:#FCA5A5; color:#DC2626; }
-    @media (max-width:900px) { .page-wrap { margin-left:0; padding:1.5rem; } .sidebar { transform:translateX(-100%); } .sidebar.ouvert { transform:translateX(0); } }
+    @media (max-width:900px) { .page-wrap { margin-left:0; padding:1.5rem; padding-top: 4rem; } .sidebar { transform:translateX(-100%); } .sidebar.ouvert { transform:translateX(0); } .btn-menu-mobile { display: flex !important; } }
+    /* Bouton menu mobile */
+    .btn-menu-mobile { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 101; background: var(--blanc); border: 2px solid var(--or); border-radius: 8px; padding: 0.6rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .btn-menu-mobile:hover { background: var(--or); }
+    .btn-menu-mobile:hover svg { color: var(--blanc); }
+    .btn-menu-mobile svg { width: 26px; height: 26px; color: var(--texte); }
   </style>
 </head>
 <body>
+  <button class="btn-menu-mobile" onclick="document.querySelector('.sidebar').classList.toggle('ouvert');">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
   @include('partials.sidebar')
 
   <div class="page-wrap">

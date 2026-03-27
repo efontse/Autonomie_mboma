@@ -328,13 +328,23 @@
     /* Responsive */
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
+      .sidebar.ouvert { transform: translateX(0); }
       .main { margin-left: 0; }
-      .content { padding: 1rem; }
+      .content { padding: 1rem; padding-top: 4rem; }
       .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .btn-menu-mobile { display: flex !important; }
     }
+    /* Bouton menu mobile */
+    .btn-menu-mobile { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 200; background: var(--blanc); border: 2px solid var(--or); border-radius: 8px; padding: 0.6rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .btn-menu-mobile:hover { background: var(--or); }
+    .btn-menu-mobile:hover svg { color: var(--blanc); }
+    .btn-menu-mobile svg { width: 26px; height: 26px; color: var(--texte); }
   </style>
 </head>
 <body>
+  <button class="btn-menu-mobile" onclick="document.querySelector('.sidebar').classList.toggle('ouvert');">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
 
 <div class="layout">
   <!-- Sidebar -->

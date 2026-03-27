@@ -104,9 +104,15 @@
     .btn-deconnexion:hover { background:#FEE2E2; border-color:#FCA5A5; color:#DC2626; }
 
     @media (max-width:900px) { .page-wrap { margin-left:0; padding:1.5rem; } .sidebar { transform:translateX(-100%); } .sidebar.ouvert { transform:translateX(0); } }
+    /* Bouton menu mobile */
+    .btn-menu-mobile { display: none; position: fixed; top: 1rem; left: 1rem; z-index: 101; background: var(--blanc); border: 1px solid var(--gris-clair); border-radius: 8px; padding: 0.5rem; cursor: pointer; }
+    .btn-menu-mobile svg { width: 24px; height: 24px; color: var(--texte); }
   </style>
 </head>
 <body>
+  <button class="btn-menu-mobile" onclick="document.querySelector('.sidebar').classList.toggle('ouvert');">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
   @include('partials.sidebar')
 
   <div class="page-wrap">
